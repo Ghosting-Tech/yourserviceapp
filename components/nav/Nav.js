@@ -77,7 +77,7 @@ export default function Nav() {
 
   useEffect(() => {
     updateUserToken();
-  }, [user, token]);
+  }, [user, token, updateUserToken]);
 
   const handleTestNotification = async () => {
     if (!token) {
