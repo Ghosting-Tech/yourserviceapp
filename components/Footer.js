@@ -25,7 +25,7 @@ const Footer = () => {
             alt="Profile image"
           />{" "}
           <p className="mb-4">
-            We're a leading agency specializing in providing customized service
+            We&apos;re a leading agency specializing in providing customized service
             solutions for businesses of all sizes.
           </p>
           <ul className="space-y-2">
