@@ -39,7 +39,7 @@ const UserNavigation = ({ handleOpenLoginDialog }) => {
       method: "GET",
     });
     toast.success("Logged out successfully!");
-    router.push("/");
+    window.location.reload();
     dispatch(setUser(null));
   };
 

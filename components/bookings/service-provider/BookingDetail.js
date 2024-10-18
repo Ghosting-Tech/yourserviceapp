@@ -68,6 +68,15 @@ const BookingDetail = ({ booking, setBooking }) => {
 
     setBooking(postData);
     const res = await axios.put(`/api/bookings/${booking._id}`, postData);
+
+    // handle sending notification to user after completing the service
+
+    axios.post(`/api/send-notification/by-user-phone`, {
+      phoneNumber: booking.phoneNumber,
+      title: "Service provider has been reached.",
+      message: "Reaching Otp has been successfully verified!",
+      link: `user/bookings/${booking._id}`
+    });
   };
 
   const [uploadedImage, setUploadedImage] = useState("");
@@ -180,6 +189,7 @@ const BookingDetail = ({ booking, setBooking }) => {
         return serviceProvider._id !== user._id;
       }
     );
+
     try {
       const res = await axios.post(
         `/api/bookings/eliminate-service-providers`,

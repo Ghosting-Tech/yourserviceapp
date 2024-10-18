@@ -3,6 +3,31 @@ import Booking from "@/models/booking";
 import User from "@/models/users";
 import { NextResponse } from "next/server";
 
+const handleSendNotification = async (token, link) => {
+  if (!token) {
+    console.error("No token available for notifications");
+    return;
+  }
+  console.log(token, link)
+  const response = await fetch(
+    `${process.env.PHONEPE_REDIRECT_URL}/api/send-notification`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: token,
+        title: "Service accepted!",
+        message: "See details...",
+        link,
+      }),
+    }
+  );
+
+  await response.json();
+};
+
 export async function POST(request) {
   try {
     await connectMongoDB(); // Ensure MongoDB connection is established
@@ -10,13 +35,13 @@ export async function POST(request) {
     const { eliminateServiceProviders, bookingId, serviceProvider } =
       await request.json();
 
-    const service = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId);
 
-    if (!service) {
+    if (!booking) {
       return NextResponse.json("Invalid booking ID", { status: 404 });
     }
 
-    if (service.acceptedByServiceProvider) {
+    if (booking.acceptedByServiceProvider) {
       return NextResponse.json(
         {
           success: false,
@@ -41,6 +66,16 @@ export async function POST(request) {
       },
       { new: true }
     );
+
+    const user = await User.findOne({
+      phoneNumber: booking.phoneNumber,
+    });
+    if (user) {
+      handleSendNotification(
+        user.notificationToken,
+        `/user/bookings/${bookingId}`
+      );
+    }
 
     return NextResponse.json(
       {

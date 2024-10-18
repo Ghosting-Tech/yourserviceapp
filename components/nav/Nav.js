@@ -60,9 +60,6 @@ export default function Nav() {
       if (user.notificationToken == token) return;
       const res = await fetch(`/api/users/update`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           ...user,
           notificationToken: token,
@@ -110,12 +107,11 @@ export default function Nav() {
           className="mr-4 cursor-pointer font-extrabold py-1.5 lg:ml-2"
         >
           <Image
-            onClick={handleTestNotification}
             width={500}
             height={500}
             src="/logo/logo.svg"
             alt="logo"
-            className="cursor-pointer w-56 object-cover"
+            className="cursor-pointer w-40 md:w-48 lg:w-56 object-cover"
           />
         </Link>
         <div className="hidden gap-2 lg:flex lg:items-center lg:justify-end w-full">

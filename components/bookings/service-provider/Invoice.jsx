@@ -69,11 +69,20 @@ const Invoice = ({ selectedBooking, setSelectedBooking }) => {
         `/api/bookings/${selectedBooking._id}`,
         postData
       );
+
       setSelectedBooking(response.data);
       toast.success("Invoice created successfully");
       handleCreateInvoiceDialog();
       setNewInvoice(initialInvoice);
       setDisableTitleInput(false);
+
+      // handle sending notification to user after completing the service
+      axios.post(`/api/send-notification/by-user-phone`, {
+        phoneNumber: selectedBooking.phoneNumber,
+        title: "Got new invoice request!",
+        message: "Click to see details",
+        link: `user/bookings/${selectedBooking._id}`,
+      });
     } catch (error) {
       console.error("Error creating invoice:", error);
       toast.error("Error creating invoice. Please try again.");
@@ -298,10 +307,18 @@ const Invoice = ({ selectedBooking, setSelectedBooking }) => {
             <div className="w-full sm:bg-white rounded-lg border overflow-auto">
               {/* Header */}
               <div className="text-white bg-teal-400 flex flex-col w-full sm:flex-row sm:rounded-none mb-2">
-                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">Description</div>
-                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">Quantity</div>
-                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">Unit Price</div>
-                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">Amount</div>
+                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">
+                  Description
+                </div>
+                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">
+                  Quantity
+                </div>
+                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">
+                  Unit Price
+                </div>
+                <div className="p-3 text-left font-semibold flex justify-center md:w-1/4">
+                  Amount
+                </div>
               </div>
 
               {/* Body */}

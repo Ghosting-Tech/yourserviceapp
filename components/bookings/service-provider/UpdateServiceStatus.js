@@ -128,6 +128,14 @@ const UpdateServiceStatus = ({ selectedNewBooking, setSelectedNewBooking }) => {
         return;
       }
       toast.success(paymentResponse.data.message);
+
+      // handle sending notification to user after completing the service
+      axios.post(`/api/send-notification/by-user-phone`, {
+        phoneNumber: selectedNewBooking.phoneNumber,
+        title: "Your service has been completed!",
+        message: "See details.",
+        link: `user/bookings/${selectedNewBooking._id}`
+      });
     } catch (err) {
       console.log(err);
     }

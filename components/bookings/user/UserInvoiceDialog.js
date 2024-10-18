@@ -23,26 +23,42 @@ const UserInvoiceDialog = ({
         handleInvoiceDialog();
       }
       setBooking(res.data);
+
+      // handle sending notification to user after completing the service
+      axios.post(`/api/send-notification/by-user-phone`, {
+        phoneNumber: booking.assignedServiceProviders.phoneNumber,
+        title: "Invoice Rejected!",
+        message: "Generate new invoice or complete the service.",
+        link: `service-provider/booking/${booking._id}`,
+      });
     } catch (err) {
       console.log(err);
       toast.error("Failed to reject the invoice!");
     }
   };
+  
   const handleAcceptInvoice = async () => {
-    const postData = {
-      ...booking,
-      status: "Service Invoice Accepted, service will start soon !",
-      invoices: {
-        ...booking.invoices,
-        status: "Invoice Accepted",
-      },
-    };
     try {
+      const postData = {
+        ...booking,
+        status: "Service Invoice Accepted, service will start soon !",
+        invoices: {
+          ...booking.invoices,
+          status: "Invoice Accepted",
+        },
+      };
       const res = await axios.put(`/api/bookings/${booking._id}`, postData);
       if (res.status === 201) {
         toast.success("Invoice accepted successfully!");
       }
       setBooking(res.data);
+
+      axios.post(`/api/send-notification/by-user-phone`, {
+        phoneNumber: booking.assignedServiceProviders.phoneNumber,
+        title: "Invoice accepted!",
+        message: "Start the service!",
+        link: `service-provider/booking/${booking._id}`,
+      });
     } catch (err) {
       console.log(err);
       toast.error("Failed to accept the invoice!");
