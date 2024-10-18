@@ -74,6 +74,7 @@ export default function Nav() {
 
   useEffect(() => {
     updateUserToken();
+    // eslint-disable-next-line
   }, [user, token]);
 
   const handleTestNotification = async () => {
