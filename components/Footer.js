@@ -36,7 +36,7 @@ const Footer = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-7 h-7"
               >
                 <path
                   strokeLinecap="round"
@@ -53,7 +53,7 @@ const Footer = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-7 h-7"
               >
                 <path
                   strokeLinecap="round"
@@ -62,6 +62,13 @@ const Footer = () => {
                 />
               </svg>
               +91 9470017395
+            </li>
+            <li className="flex items-center gap-1">
+              <Image src={'/logo/ghosting.png'} width={100} height={100} className="w-8" /> 
+              Powered by{" "}
+              <Link target="_blank" href={`https://ghosting.in/`} className="underline text-blue-700">
+                Ghosting Tech
+              </Link>
             </li>
           </ul>
         </div>
@@ -122,7 +129,10 @@ const Footer = () => {
           <Link href={`/refund-policy`} className="hover:underline text-xs">
             Refund Policy
           </Link>
-          <Link href={`/terms-and-condition`} className="hover:underline text-xs">
+          <Link
+            href={`/terms-and-condition`}
+            className="hover:underline text-xs"
+          >
             Terms and Conditions
           </Link>
         </div>

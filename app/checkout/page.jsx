@@ -83,7 +83,7 @@ function Shipping() {
               },
               (error) => {
                 console.error("Error getting the location:", error);
-                alert("Please enable geolocation to use this feature.");
+                toast.error("Please enable location.");
                 reject(error);
               }
             );
@@ -225,7 +225,7 @@ function Shipping() {
         //   );
         // }
 
-        router.push(`/user/bookings/${booking._id}`)
+        router.push(`/user/bookings/${booking._id}`);
 
         // Clear cart after successful booking
         localStorage.removeItem("cart");
@@ -243,7 +243,15 @@ function Shipping() {
 
   useEffect(() => {
     if (formData.address === "Error fetching address") {
-      window.location.reload();
+      toast.error("Unable to fetch address. accept geolocation and refresh!", {
+        action: {
+          label: "Refresh",
+          onClick: () => window.location.reload(),
+        },
+      });
+      setDisableRedirectingButton(true);
+    }else{
+      setDisableRedirectingButton(false);
     }
   }, [formData]);
 
