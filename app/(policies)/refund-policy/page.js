@@ -23,18 +23,18 @@ export default function RefundPolicy() {
         </li>
       </ul>
       <ul className="space-y-3 text-gray-700">
-        <li className="flex items-center gap-2">
+        {/* <li className="flex items-center gap-2">
           <MapPinIcon className="w-5 h-5 text-teal-500" />
           Address: 62, Millennium 2, behind Raghukul Textile Market, New Textile
           Market, Surat, Gujarat 395002
-        </li>
+        </li> */}
         <li className="flex items-center gap-2">
           <PhoneIcon className="w-5 h-5 text-teal-500" />
-          Phone: +919909338631
+          Phone: +91 9470017395
         </li>
         <li className="flex items-center gap-2">
           <EnvelopeIcon className="w-5 h-5 text-teal-500" />
-          Email: ridhisumanfabrics@gmail.com
+          Email: support@yourserviceapp.in
         </li>
       </ul>
     </div>

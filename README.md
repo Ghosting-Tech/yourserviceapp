@@ -1,6 +1,6 @@
-# 🌟 Service Wallah 🌟
+# 🌟 Yourserviceapp 🌟
 
-Welcome to **Service Wallah** – your one-stop solution for connecting users with service providers. Our software offers a seamless and automated experience for both users and service providers, ensuring a hassle-free and smooth interaction.
+Welcome to **Yourserviceapp** – your one-stop solution for connecting users with service providers. Our software offers a seamless and automated experience for both users and service providers, ensuring a hassle-free and smooth interaction.
 
 ## 🚀 Features
 
@@ -81,4 +81,4 @@ For any inquiries or feedback, feel free to reach out at [musharrafjamal08@.com]
 
 ---
 
-Thank you for using **Service Wallah**! We hope you have a wonderful experience.
+Thank you for using **Yourserviceapp**! We hope you have a wonderful experience.

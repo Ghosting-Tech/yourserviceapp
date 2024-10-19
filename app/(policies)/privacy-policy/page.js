@@ -47,9 +47,7 @@ const Page = () => {
           directors or other managing authority.
         </li>
         <li className="mb-2">
-          <strong>Company</strong> (referred to as either &quot;the
-          Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in
-          this Agreement) refers to Ridhi Suman Fabrics.
+        <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Yourserviceapp.
         </li>
         <li className="mb-2">
           <strong>Cookies</strong> are small files that are placed on Your
@@ -58,7 +56,7 @@ const Page = () => {
           uses.
         </li>
         <li className="mb-2">
-          <strong>Country</strong> refers to: Gujarat, India
+          <strong>Country</strong> refers to: Bihar, India
         </li>
         <li className="mb-2">
           <strong>Device</strong> means any device that can access the Service
@@ -85,15 +83,15 @@ const Page = () => {
           infrastructure itself (for example, the duration of a page visit).
         </li>
         <li className="mb-2">
-          <strong>Website</strong> refers to Ridhi Suman Fabrics, accessible
+          <strong>Website</strong> refers to Yourserviceapp, accessible
           from{" "}
           <a
-            href="https://ridhisumanfabrics.com"
+            href="http://demo.yourserviceapp.in"
             rel="external nofollow noopener"
             target="_blank"
             className="text-pink-600 underline"
           >
-            ridhisumanfabrics.com
+            demo.yourserviceapp.in
           </a>
         </li>
         <li className="mb-2">
@@ -483,10 +481,10 @@ const Page = () => {
       </p>
       <ul>
         <li>
-          <p>By email: ridhisumanfabrics@gmail.com</p>
+          <p>By email: support@yourserviceapp.in</p>
         </li>
         <li>
-          <p>By phone number: +91 9909338631</p>
+          <p>By phone number: +91 9470017395</p>
         </li>
       </ul>
     </div>
