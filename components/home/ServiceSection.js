@@ -1,11 +1,11 @@
 // components/ServiceSection.js
 import ServiceCard from "./ServiceCard";
-import personIcon from "../public/image/service1.svg"; // Ensure this file is in the public folder
-import personIcon2 from "../public/image/service2.svg"; // Ensure this file is in the public folder
-import personIcon3 from "../public/image/service3.svg"; // Ensure this file is in the public folder
-import medalIcon from "../public/image/service1model.svg"; // Ensure this file is in the public folder
-import medalIcon2 from "../public/image/service2model.svg"; // Ensure this file is in the public folder
-import medalIcon3 from "../public/image/service3model.svg";
+import personIcon from "@/public/image/service1.svg"; // Ensure this file is in the public folder
+import personIcon2 from "@/public/image/service2.svg"; // Ensure this file is in the public folder
+import personIcon3 from "@/public/image/service3.svg"; // Ensure this file is in the public folder
+import medalIcon from "@/public/image/service1model.svg"; // Ensure this file is in the public folder
+import medalIcon2 from "@/public/image/service2model.svg"; // Ensure this file is in the public folder
+import medalIcon3 from "@/public/image/service3model.svg";
 import { WiStars } from "react-icons/wi";
 import Image from "next/image";
 

@@ -17,7 +17,7 @@ const CallToAction = dynamic(() => import("@/components/home/CallToAction"), {
 });
 
 // Lazy load components
-const ServiceSection = lazy(() => import("../components/ServiceSection"));
+const ServiceSection = lazy(() => import("../components/home/ServiceSection"));
 const VideoCarousel = lazy(() => import("../components/home/VideoCarousel"));
 const TopServices = lazy(() => import("@/components/home/TopServices"));
 

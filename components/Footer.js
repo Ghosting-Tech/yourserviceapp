@@ -25,8 +25,8 @@ const Footer = () => {
             alt="Profile image"
           />{" "}
           <p className="mb-4">
-            We&apos;re a leading agency specializing in providing customized service
-            solutions for businesses of all sizes.
+            We&apos;re a leading agency specializing in providing customized
+            service solutions for businesses of all sizes.
           </p>
           <ul className="space-y-2">
             <li className="flex items-center gap-1">
@@ -70,20 +70,14 @@ const Footer = () => {
         <div className="flex flex-col md:w-1/3 mx-auto w-full px-4 md:px-0">
           <h3 className="text-xl font-bold mb-4">Important Links</h3>
           <ul className="flex flex-col gap-2 justify-center">
+            <Link href={`/become-service-provider`} className="hover:underline">
+              Become Services Provider
+            </Link>
             <Link href={`/about`} className="hover:underline">
               About Us
             </Link>
             <Link href={`/services`} className="hover:underline">
               Services
-            </Link>
-            <Link href={`/privacy-policy`} className="hover:underline">
-              Privacy Policy
-            </Link>
-            <Link href={`/refund-policy`} className="hover:underline">
-              Refund Policy
-            </Link>
-            <Link href={`/terms-and-condition`} className="hover:underline">
-              Terms and Conditions
             </Link>
           </ul>
         </div>
@@ -119,8 +113,19 @@ const Footer = () => {
           </Link>
         </div>
       </div>
-      <div className="border-t border-gray-300 text-center text-sm pt-4 mt-4">
-        <p>© Yourserviceapp. All rights reserved.</p>
+      <div className="border-t border-gray-300 text-center text-sm pt-4 px-4 md:px-16 pb-0 mt-4 flex flex-col items-center gap-4 md:flex-row md:justify-between">
+        <p className="text-xs">© Yourserviceapp. All rights reserved.</p>
+        <div className="flex items-center gap-4">
+          <Link href={`/privacy-policy`} className="hover:underline text-xs">
+            Privacy Policy
+          </Link>
+          <Link href={`/refund-policy`} className="hover:underline text-xs">
+            Refund Policy
+          </Link>
+          <Link href={`/terms-and-condition`} className="hover:underline text-xs">
+            Terms and Conditions
+          </Link>
+        </div>
       </div>
     </footer>
   );

@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { WiStars } from "react-icons/wi";
-import ServiceSection from "@/components/ServiceSection";
+import ServiceSection from "@/components/home/ServiceSection";
 
 const About = () => {
   return (

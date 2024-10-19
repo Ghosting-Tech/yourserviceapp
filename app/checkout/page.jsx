@@ -197,33 +197,35 @@ function Shipping() {
         const booking = response.data.booking;
 
         // Initiate payment separately after booking is created
-        const amount = (
-          booking.cartItems.reduce(
-            (acc, product) => acc + product.price * product.quantity,
-            0
-          ) + 18
-        ).toFixed(2);
+        // const amount = (
+        //   booking.cartItems.reduce(
+        //     (acc, product) => acc + product.price * product.quantity,
+        //     0
+        //   ) + 18
+        // ).toFixed(2);
 
-        const paymentResponse = await axios.post(
-          `/api/payments/initiate-payment`,
-          {
-            bookingId: booking._id,
-            amount,
-            userId: user._id,
-            userPhoneNumber: booking.phoneNumber,
-            invoice: false,
-          }
-        );
+        // const paymentResponse = await axios.post(
+        //   `/api/payments/initiate-payment`,
+        //   {
+        //     bookingId: booking._id,
+        //     amount,
+        //     userId: user._id,
+        //     userPhoneNumber: booking.phoneNumber,
+        //     invoice: false,
+        //   }
+        // );
 
-        if (paymentResponse.data.success) {
-          const phonePeRedirectUrl =
-            paymentResponse.data.data.instrumentResponse.redirectInfo.url;
-          router.push(phonePeRedirectUrl);
-        } else {
-          toast.error(
-            paymentResponse.data.message || "Payment initiation failed."
-          );
-        }
+        // if (paymentResponse.data.success) {
+        //   const phonePeRedirectUrl =
+        //     paymentResponse.data.data.instrumentResponse.redirectInfo.url;
+        //   router.push(phonePeRedirectUrl);
+        // } else {
+        //   toast.error(
+        //     paymentResponse.data.message || "Payment initiation failed."
+        //   );
+        // }
+
+        router.push(`/user/bookings/${booking._id}`)
 
         // Clear cart after successful booking
         localStorage.removeItem("cart");
@@ -420,7 +422,8 @@ function Shipping() {
               variant="gradient"
               type="submit"
             >
-              Continue to payments
+              {/* Continue to payments */}
+              Book Service
             </Button>
           </form>
         </div>
