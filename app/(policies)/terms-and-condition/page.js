@@ -6,7 +6,7 @@ const page = () => {
       <h1 className="text-4xl font-semibold text-pink-500 border-b pb-4">
         Terms and Conditions
       </h1>
-      <p className="text-gray-700">Last updated: July 31, 2024</p>
+      <p className="text-gray-700">Last updated: October 19, 2024</p>
       <p className="text-gray-700 leading-relaxed">
         Please read these terms and conditions carefully before using Our
         Service.
@@ -37,12 +37,12 @@ const page = () => {
           directors or other managing authority.
         </li>
         <li>
-          <strong>Country</strong> refers to: Gujarat, India
+          <strong>Country</strong> refers to: Bihar, India
         </li>
         <li>
           <strong>Company</strong> (referred to as either &quot;the
           Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in
-          this Agreement) refers to Ridhi Suman Fabrics.
+          this Agreement) refers to Yourserviceapp.
         </li>
         <li>
           <strong>Device</strong> means any device that can access the Service
@@ -64,15 +64,14 @@ const page = () => {
           available by the Service.
         </li>
         <li>
-          <strong>Website</strong> refers to Ridhi Suman Fabrics, accessible
-          from{" "}
+          <strong>Website</strong> refers to Yourserviceapp, accessible from{" "}
           <a
-            href="ridhisumanfabrics.com"
+            href="http://demo.yourserviceapp.in"
             rel="external nofollow noopener"
             target="_blank"
             className="text-blue-500 hover:underline"
           >
-            ridhisumanfabrics.com
+            demo.yourserviceapp.in
           </a>
         </li>
         <li>
@@ -314,10 +313,10 @@ const page = () => {
       </p>
       <ul className="list-disc ml-4 text-gray-700 space-y-3">
         <li>
-          <p>By email: ridhisumanfabrics@gmail.com</p>
+          <p>By email: support@yourserviceapp.in</p>
         </li>
         <li>
-          <p>By phone number: +91 9909338631</p>
+          <p>By phone number: +91 9470017395</p>
         </li>
       </ul>
     </div>
