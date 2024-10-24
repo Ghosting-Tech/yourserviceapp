@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import Sub from './subService'; // Import the Sub model
+import Sub from "./subService"; // Import the Sub model
 
 const serviceSchema = new Schema(
   {
@@ -11,6 +11,10 @@ const serviceSchema = new Schema(
       type: Object,
     },
     status: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },
@@ -38,6 +42,7 @@ const serviceSchema = new Schema(
   }
 );
 
-const Service = mongoose.models.Service || mongoose.model("Service", serviceSchema);
+const Service =
+  mongoose.models.Service || mongoose.model("Service", serviceSchema);
 
 export default Service;

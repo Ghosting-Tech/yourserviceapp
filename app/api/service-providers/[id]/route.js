@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
   const { id } = params;
-//   console.log(id);
+  //   console.log(id);
   await connectMongoDB();
-  const serviceProvider = await User.findById(id);
+  const serviceProvider = await User.findById(id).populate("services");
   return NextResponse.json(serviceProvider, { status: 201 });
 }
 

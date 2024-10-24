@@ -29,12 +29,14 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { name, status, rank, tags, icon, images } = await request.json();
-  
+  const { name, status, description, rank, tags, icon, images } =
+    await request.json();
+
   await connectMongoDB();
   const service = await Service.create({
     name,
     status,
+    description,
     rank,
     tags,
     icon,

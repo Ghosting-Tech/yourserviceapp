@@ -117,15 +117,28 @@ const UserList = ({
                   </Button>
                 </Link>
               )}
-              <Button
-                size="sm"
-                variant="gradient"
-                color="indigo"
-                onClick={() => handleOpen(user._id)}
-                className="flex items-center gap-1 w-full justify-center rounded"
-              >
-                View <MdOpenInNew />
-              </Button>
+              {serviceProvider ? (
+                <Link href={`/admin/service-providers/details/${user._id}`}>
+                  <Button
+                    size="sm"
+                    variant="gradient"
+                    color="indigo"
+                    className="flex items-center gap-1 w-full justify-center rounded"
+                  >
+                    View <MdOpenInNew />
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="gradient"
+                  color="indigo"
+                  onClick={() => handleOpen(user._id)}
+                  className="flex items-center gap-1 w-full justify-center rounded"
+                >
+                  View <MdOpenInNew />
+                </Button>
+              )}
             </div>
 
             {openDialogId === user._id && (
@@ -225,7 +238,9 @@ const UserList = ({
                       }}
                       className="flex items-center gap-1 rounded"
                     >
-                      {serviceProvider ? "Delete Service Provider" : "Delete User"}
+                      {serviceProvider
+                        ? "Delete Service Provider"
+                        : "Delete User"}
                       <AiOutlineUserDelete />
                     </Button>
                     <Button
@@ -235,9 +250,7 @@ const UserList = ({
                       onClick={() => userDeactivating(user)}
                       className="flex items-center gap-1 rounded"
                     >
-                      <span>
-                        {user.active ? "Deactivate" : "Activate"}
-                      </span>
+                      <span>{user.active ? "Deactivate" : "Activate"}</span>
                       <FaUserAltSlash />
                     </Button>
                   </DialogFooter>

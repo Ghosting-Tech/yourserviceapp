@@ -9,7 +9,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 
 const libraries = ["places"];
 
-const ServiceProviderLocation = ({ serviceProvider }) => {
+const ServiceProviderLocation = ({ serviceProvider, role }) => {
   const [locations, setLocations] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -49,10 +49,7 @@ const ServiceProviderLocation = ({ serviceProvider }) => {
         locations: updatedLocations,
       };
 
-      await axios.post(
-        `/api/users/update`,
-        postData
-      );
+      await axios.post(`/api/users/update`, postData);
       setSelectedPlace(null);
     }
   };
@@ -98,30 +95,36 @@ const ServiceProviderLocation = ({ serviceProvider }) => {
             <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0 text-center md:text-left w-full flex items-center">
               <MdLocationOn color="red" size={25} /> Your available locations
             </h2>
-            <p className="text-gray-500 text-sm">Your location is only valid within the radius of 15km</p>
+            <p className="text-gray-500 text-sm">
+              Your location is only valid within the radius of 15km
+            </p>
           </div>
           <div className="flex gap-2 flex-col md:flex-row w-full md:w-fit">
-            <div className="w-full md:w-72">
-              <StandaloneSearchBox
-                onLoad={onLoad}
-                onPlacesChanged={onPlacesChanged}
+            {role != "admin" && (
+              <div className="w-full md:w-72">
+                <StandaloneSearchBox
+                  onLoad={onLoad}
+                  onPlacesChanged={onPlacesChanged}
+                >
+                  <Input
+                    label="Search for a location"
+                    size="lg"
+                    className="p-2 w-full border rounded"
+                  />
+                </StandaloneSearchBox>
+              </div>
+            )}
+            {role != "admin" && (
+              <Button
+                color="blue"
+                variant="gradient"
+                onClick={handleAddLocation}
+                className="flex gap-1 items-center justify-center rounded text-sm whitespace-nowrap"
               >
-                <Input
-                  label="Search for a location"
-                  size="lg"
-                  className="p-2 w-full border rounded"
-                />
-              </StandaloneSearchBox>
-            </div>
-            <Button
-              color="blue"
-              variant="gradient"
-              onClick={handleAddLocation}
-              className="flex gap-1 items-center justify-center rounded text-sm whitespace-nowrap"
-            >
-              Add location
-              <MdAddLocationAlt size={18} />
-            </Button>
+                Add location
+                <MdAddLocationAlt size={18} />
+              </Button>
+            )}
           </div>
         </div>
         {locations?.map((location, index) => (

@@ -17,6 +17,7 @@ import {
   Carousel,
   IconButton,
   ButtonGroup,
+  Textarea,
 } from "@material-tailwind/react";
 import {
   IoIosAddCircleOutline,
@@ -446,7 +447,7 @@ const ServicePage = () => {
                   }}
                 >
                   <h1 className="text-3xl font-bold text-indigo-500 font-lato p-4 text-center">
-                    Create New Service
+                    Edit Service
                   </h1>
                   <div className="p-4 grid grid-cols-1 gap-4 overflow-auto">
                     <Input
@@ -476,6 +477,17 @@ const ServicePage = () => {
                         InActive
                       </Option>
                     </Select>
+                    <Textarea
+                      label="Description"
+                      color="indigo"
+                      value={updateService.description}
+                      onChange={(e) =>
+                        setUpdateService({
+                          ...updateService,
+                          description: e.target.value,
+                        })
+                      }
+                    />
                   </div>
 
                   <DialogFooter>
@@ -621,7 +633,7 @@ const ServicePage = () => {
                   height={1000}
                   src={service.icon?.url}
                   alt=""
-                  className="w-48 h-48 rounded-md object-cover drop-shadow-lg"
+                  className="w-48 h-60 rounded-md object-cover drop-shadow-lg"
                 />
                 <div className="flex flex-col gap-2 justify-center">
                   <div>
@@ -642,6 +654,9 @@ const ServicePage = () => {
                   <h1 className="font-bold text-5xl text-gray-700">
                     {service.name}
                   </h1>
+                  <p className="text-sm text-gray-600  overflow-y-auto no-scrollbar pl-2 max-h-32 max-w-96">
+                    {service.description}
+                  </p>
                   <div className="text-sm">{formattedDate}</div>
                 </div>
               </div>
@@ -805,7 +820,7 @@ const ServicePage = () => {
             <div className="h-px bg-gray-400 w-full"></div>
 
             <div className="flex justify-center md:justify-start flex-wrap gap-3 mx-auto md:mx-0">
-              {subServices.map((sub, index) => {
+              {subServices?.map((sub, index) => {
                 return (
                   <SubServiceCard
                     key={index}

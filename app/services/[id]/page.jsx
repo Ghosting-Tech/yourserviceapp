@@ -95,7 +95,7 @@ const ReviewCard = ({ name, review, rating, image }) => (
         </div>
       )}
     </div>
-    
+
     {/* Review Content */}
     <div className="flex-1">
       <div className="flex justify-between">
@@ -405,6 +405,9 @@ const Service = () => {
                   </div>
                 </div>
               </div>
+              <p className="text-sm text-gray-600  overflow-y-auto no-scrollbar  max-h-24 max-w-[450px]">
+                {service.description}
+              </p>
               <div className="flex gap-2 items-center  ">
                 <div className="whitespace-nowrap text-sm">
                   Reviews & Bookings

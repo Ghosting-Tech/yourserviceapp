@@ -9,6 +9,7 @@ import {
   Input,
   Select,
   Option,
+  Textarea,
 } from "@material-tailwind/react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
@@ -24,6 +25,7 @@ const Services = () => {
   const [serviceData, setServiceData] = useState({
     name: "",
     status: "",
+    description: "",
     rank: "",
     tags: "",
     icon: {
@@ -44,6 +46,10 @@ const Services = () => {
     try {
       if (serviceData.name === "") {
         toast.error("Name is required");
+        return;
+      }
+      if (serviceData.description === "") {
+        toast.error("Description is required");
         return;
       }
       if (serviceData.status === "") {
@@ -110,6 +116,7 @@ const Services = () => {
       setServiceData({
         name: "",
         status: "",
+        description: "",
         rank: "",
         tags: "",
         icon: {
@@ -224,6 +231,16 @@ const Services = () => {
                     setServiceData({ ...serviceData, tags: e.target.value })
                   }
                 /> */}
+                <Textarea
+                  label="Description"
+                  color="indigo"
+                  onChange={(e) =>
+                    setServiceData({
+                      ...serviceData,
+                      description: e.target.value,
+                    })
+                  }
+                />
                 <div className="flex flex-col gap-2 cursor-pointer">
                   <label htmlFor="icon">Icon</label>
                   <input
