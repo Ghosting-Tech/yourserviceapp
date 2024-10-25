@@ -53,30 +53,35 @@ const BookingDetail = ({ booking, setBooking }) => {
 
   const [otpVerified, setOtpVerified] = useState(false);
   const handleVerifyOtp = async () => {
-    const otpValue = otp.join("");
-    if (otpValue != booking.otp) {
-      toast.error("Invalid otp");
-      return;
+    try {
+      const otpValue = otp.join("");
+      if (otpValue != booking.otp) {
+        toast.error("Invalid otp");
+        return;
+      }
+      setOtpVerified(true);
+      setOtp(["", "", "", ""]);
+      const postData = {
+        ...booking,
+        otpVerified: true,
+        status: "Service provider has been reached!",
+      };
+
+      setBooking(postData);
+      await axios.put(`/api/bookings/${booking._id}`, postData);
+
+      // handle sending notification to user after completing the service
+
+      axios.post(`/api/send-notification/by-user-phone`, {
+        phoneNumber: booking.phoneNumber,
+        title: "Service provider has been reached.",
+        message: "Reaching Otp has been successfully verified!",
+        link: `user/bookings/${booking._id}`,
+      });
+    } catch (e) {
+      console.log(e);
+      toast.error("Failed to verify the otp!");
     }
-    setOtpVerified(true);
-    setOtp(["", "", "", ""]);
-    const postData = {
-      ...booking,
-      otpVerified: true,
-      status: "Service provider has been reached!",
-    };
-
-    setBooking(postData);
-    const res = await axios.put(`/api/bookings/${booking._id}`, postData);
-
-    // handle sending notification to user after completing the service
-
-    axios.post(`/api/send-notification/by-user-phone`, {
-      phoneNumber: booking.phoneNumber,
-      title: "Service provider has been reached.",
-      message: "Reaching Otp has been successfully verified!",
-      link: `user/bookings/${booking._id}`
-    });
   };
 
   const [uploadedImage, setUploadedImage] = useState("");

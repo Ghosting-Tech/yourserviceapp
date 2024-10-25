@@ -84,7 +84,7 @@ const InvoiceDetail = ({ booking }) => {
 
   return (
     <>
-      {booking.invoices && (
+      {booking.invoices?.title && (
         <div className="bg-white p-6 rounded-lg shadow w-full mb-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-md md:text-xl font-semibold text-gray-800">

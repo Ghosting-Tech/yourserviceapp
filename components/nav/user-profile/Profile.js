@@ -34,6 +34,7 @@ import { toast } from "sonner";
 import UserNavigation from "./UserNavigation";
 import { setUser } from "@/redux/slice/userSlice";
 import { useDispatch } from "react-redux";
+import sendSmsMessage from "@/utils/sendSmsMessage";
 
 const Profile = ({
   openLoginDialog,
@@ -155,15 +156,21 @@ const Profile = ({
       toast.error(data.message);
       return;
     }
-    const authkey = process.env.NEXT_PUBLIC_AUTH_KEY;
-    const name = "service wallah account";
     const mobile = registerData.phoneNumber;
-    const country_code = "+91";
-    const SID = "13608";
     const otp = generateOTP();
     setGeneratedOtp(otp);
-    const url = `https://api.authkey.io/request?authkey=${authkey}&mobile=${mobile}&country_code=${country_code}&sid=${SID}&company=${name}&otp=${otp}`;
-    await axios.get(url);
+
+    const sms = await sendSmsMessage(
+      mobile,
+      `Dear ${registerData.name}, Your OTP for phone number verification is ${otp}. Please enter this OTP to complete the registration process. Regards, Ghosting Webtech Pvt Ltd`,
+      "1707172906187016975"
+    );
+
+    if (!sms.success) {
+      toast.error("Failed to send verification OTP.");
+      return;
+    }
+
     setOpen4(true);
   };
   async function handleRegister(e) {

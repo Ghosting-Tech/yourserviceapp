@@ -103,12 +103,19 @@ export default function PaymentTable({
                     {payment.paid ? "Not Paid" : "Paid"}
                   </Button>
                 )}
-
-                <Link href={`/admin/bookings/${payment.booking}`}>
-                  <IconButton variant="text" color="blue-gray">
-                    <ArrowTopRightOnSquareIcon className="h-5 w-5" />
-                  </IconButton>
-                </Link>
+                {serviceProvider ? (
+                  <Link href={`/service-provider/booking/${payment.booking}`}>
+                    <IconButton variant="text" color="blue-gray">
+                      <ArrowTopRightOnSquareIcon className="h-5 w-5" />
+                    </IconButton>
+                  </Link>
+                ) : (
+                  <Link href={`/admin/bookings/${payment.booking}`}>
+                    <IconButton variant="text" color="blue-gray">
+                      <ArrowTopRightOnSquareIcon className="h-5 w-5" />
+                    </IconButton>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

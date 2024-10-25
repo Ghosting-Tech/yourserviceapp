@@ -18,6 +18,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import sendSmsMessage from "@/utils/sendSmsMessage";
 
 function Shipping() {
   const [formData, setFormData] = useState({
@@ -250,7 +251,7 @@ function Shipping() {
         },
       });
       setDisableRedirectingButton(true);
-    }else{
+    } else {
       setDisableRedirectingButton(false);
     }
   }, [formData]);
@@ -267,7 +268,7 @@ function Shipping() {
               <div key={index} className="flex items-center">
                 <Image
                   src={item.icon?.url}
-                  alt="Product"
+                  alt={`service${index}`}
                   width={100}
                   height={100}
                   className="w-24 h-24 mr-3 object-cover rounded-lg"
@@ -421,10 +422,9 @@ function Shipping() {
               </p>
             </div>
             <Button
-              className="mt-4 flex justify-center items-center gap-1"
+              className="mt-4 flex justify-center items-center gap-1 w-full"
               size="lg"
               color="teal"
-              fullWidth
               loading={redirectingLoading}
               disabled={disableRedirectingButton || redirectingLoading}
               variant="gradient"

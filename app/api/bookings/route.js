@@ -5,6 +5,9 @@ import { NextResponse } from "next/server";
 import Service from "@/models/service-model";
 import { getDistance } from "@/utils/distance";
 import User from "@/models/users";
+import sendSmsMessage from "@/utils/sendSmsMessage";
+import axios from "axios";
+import shortUrl from "@/utils/shortUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -194,7 +197,56 @@ export async function POST(request) {
       }
     });
 
-    return NextResponse.json({ booking, updatedUser }, { status: 201 });
+    //Sending SMS to the service providers
+
+    newBooking.availableServiceProviders.map(async (provider) => {
+      const cleanUrl = await shortUrl(
+        `https://demo.yourserviceapp.in/service-provider/booking/${booking._id}`
+      );
+
+      const itemNames = booking.cartItems.map((item) => item.name).join(", ");
+      const truncatedItemNames =
+        itemNames.length > 30 ? `${itemNames.slice(0, 27)}...` : itemNames;
+
+      const message = `You've received a booking request for ${truncatedItemNames}, scheduled on ${booking.date} ${cleanUrl}. Please log in to your dashboard to accept or decline the service request. -- GHOSTING WEBTECH PRIVATE LIMITED`;
+
+      await fetch(`${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          number: provider.phoneNumber,
+          message,
+          templateid: "1707172966908046231",
+        }),
+      });
+    });
+
+    // Sending SMS to User on creating booking
+
+    const cleanUrl = await shortUrl(
+      `https://demo.yourserviceapp.in/user/bookings/${booking._id}`
+    );
+
+    const message = `Thank you, ${booking.fullname}. Your booked reservation ID: ${booking.bookingId} scheduled on ${booking.date} was successful! Track booking: ${cleanUrl} -- GHOSTING WEBTECH PRIVATE LIMITED`;
+
+    await fetch(`${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        number: booking.phoneNumber,
+        message,
+        templateid: "1707172959504931343",
+      }),
+    });
+
+    return NextResponse.json(
+      { booking, updatedUser, cleanUrl },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error handling order:", error);
     return NextResponse.json(

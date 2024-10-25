@@ -110,6 +110,7 @@ const ServiceProviderDetailsPage = () => {
   useEffect(() => {
     fetchServiceProvider();
     fetchingServices();
+    // eslint-disable-next-line
   }, [id]);
 
   if (loading) {

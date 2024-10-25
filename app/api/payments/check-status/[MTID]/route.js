@@ -1,5 +1,7 @@
 import connectMongoDB from "@/libs/mongodb";
 import Booking from "@/models/booking";
+import formatDate from "@/utils/formatDate";
+import shortUrl from "@/utils/shortUrl";
 import axios from "axios";
 import { NextResponse } from "next/server";
 import sha256 from "sha256";
@@ -30,7 +32,6 @@ export async function GET(req, { params }) {
     saltIndex;
 
   try {
-    // Set request options for axios
     const options = {
       method: "GET",
       url: `${PHONEPE_BASE_URL}${checkEndPoint}/status/${PHONEPE_MERCHANT_ID}/${MTID}`,
@@ -64,6 +65,28 @@ export async function GET(req, { params }) {
           },
           { new: true }
         );
+
+        const currentDate = formatDate();
+
+        const message = `Hi ${
+          booking.fullname
+        }, We've received your Invoice payment of ₹ ${
+          booking.invoices?.total || 0
+        } for Booking ID: ${
+          booking.bookingId
+        }. processed on ${currentDate}. - GHOSTING WEBTECH PRIVATE LIMITED`;
+
+        await fetch(`${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            number: booking.phoneNumber,
+            message,
+            templateid: "1707172967668368450",
+          }),
+        });
       } else {
         await Booking.findByIdAndUpdate(
           bookingId,
@@ -77,6 +100,35 @@ export async function GET(req, { params }) {
           },
           { new: true }
         );
+
+        const amount = (
+          booking.cartItems.reduce(
+            (acc, product) => acc + product.price * product.quantity,
+            0
+          ) + 18
+        ).toFixed(2);
+
+        const cleanUrl = await shortUrl(
+          `https://demo.yourserviceapp.in/user/bookings/${booking._id}`
+        );
+
+        const itemNames = booking.cartItems.map((item) => item.name).join(", ");
+        const truncatedItemNames =
+          itemNames.length > 30 ? `${itemNames.slice(0, 27)}...` : itemNames;
+
+        const message = `Hi ${booking.fullname} We've received your payment of ₹ ${amount} for your booking of ${truncatedItemNames}. Your booking is confirmed. Track your booking here: ${cleanUrl}. - GHOSTING WEBTECH PRIVATE LIMITED`;
+
+        await fetch(`${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            number: booking.phoneNumber,
+            message,
+            templateid: "1707172967865150658",
+          }),
+        });
       }
     }
 

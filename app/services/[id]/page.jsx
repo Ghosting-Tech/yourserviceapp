@@ -494,18 +494,16 @@ const Service = () => {
                 </IconButton>
               )}
             >
-              {service.images?.map((image) => {
-                return (
-                  <Image
-                    width={1000}
-                    height={1000}
-                    key={image.name}
-                    src={image.url}
-                    alt=""
-                    className="h-96 w-full object-cover"
-                  />
-                );
-              })}
+              {service.images?.map((image) => (
+                <Image
+                  width={1000}
+                  height={1000}
+                  key={image.name}
+                  src={image.url}
+                  alt=""
+                  className="h-96 w-full object-cover"
+                />
+              ))}
             </Carousel>
           </div>
           <div className="w-full flex flex-col justify-center items-center py-4 px-4">
@@ -556,7 +554,7 @@ const Service = () => {
                       {cartItems.some((sub) => sub._id === subService._id) ? (
                         <Button
                           size="lg"
-                          fullWidth={true}
+                          fullWidth
                           variant="gradient"
                           color="red"
                           className="flex gap-2 items-center justify-center"
@@ -568,7 +566,7 @@ const Service = () => {
                       ) : (
                         <Button
                           size="lg"
-                          fullWidth={true}
+                          fullWidth
                           variant="gradient"
                           color="indigo"
                           className="flex gap-2 items-center justify-center"
@@ -614,7 +612,7 @@ const Service = () => {
                         {cartItems.some((sub) => sub._id === subService._id) ? (
                           <Button
                             size="lg"
-                            fullWidth={true}
+                            fullWidth
                             variant="gradient"
                             color="red"
                             className="flex gap-2 items-center justify-center"
@@ -626,7 +624,7 @@ const Service = () => {
                         ) : (
                           <Button
                             size="lg"
-                            fullWidth={true}
+                            fullWidth
                             variant="gradient"
                             color="indigo"
                             className="flex gap-2 items-center justify-center"

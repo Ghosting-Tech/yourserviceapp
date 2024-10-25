@@ -108,10 +108,10 @@ const UserInvoiceDialog = ({
         </div>
         <div className="w-full sm:bg-white rounded-lg border overflow-auto">
           <div className="text-white bg-gray-600 flex flex-col sm:flex-row sm:rounded-none mb-2 sm:mb-0">
-            <div className="p-3 text-left font-semibold">Description</div>
-            <div className="p-3 text-left font-semibold">Quantity</div>
-            <div className="p-3 text-left font-semibold">Unit Price</div>
-            <div className="p-3 text-left font-semibold">Amount</div>
+            <div className="p-3 text-center font-semibold md:w-1/4 ">Description</div>
+            <div className="p-3 text-center font-semibold md:w-1/4 ">Quantity</div>
+            <div className="p-3 text-center font-semibold md:w-1/4 ">Unit Price</div>
+            <div className="p-3 text-center font-semibold md:w-1/4 ">Amount</div>
           </div>
           <div className="flex flex-col sm:flex-none">
             {booking.invoices?.items?.map((item, index) => (
@@ -119,16 +119,16 @@ const UserInvoiceDialog = ({
                 className="flex flex-col sm:flex-row mb-2 sm:mb-0 border-gray-300 border-b last:border-b-0 sm:border-none"
                 key={index}
               >
-                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0">
+                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0 text-center md:w-1/4">
                   {item.description}
                 </div>
-                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0">
+                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0 text-center md:w-1/4">
                   {item.quantity}
                 </div>
-                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0">
+                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0 text-center md:w-1/4">
                   ₹{item.unitPrice}
                 </div>
-                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0">
+                <div className="border-grey-light border-b sm:border-none p-3 truncate last:border-b-0 text-center md:w-1/4">
                   ₹{item.amount}
                 </div>
               </div>
