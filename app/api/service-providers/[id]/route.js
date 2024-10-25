@@ -6,7 +6,7 @@ export async function GET(request, { params }) {
   const { id } = params;
   //   console.log(id);
   await connectMongoDB();
-  const serviceProvider = await User.findById(id).populate("services");
+  const serviceProvider = await User.findById(id);
   return NextResponse.json(serviceProvider, { status: 201 });
 }
 

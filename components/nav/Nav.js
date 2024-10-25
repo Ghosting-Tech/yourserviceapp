@@ -97,7 +97,6 @@ export default function Nav() {
     });
 
     const data = await response.json();
-    console.log(data);
   };
 
   return (
@@ -108,11 +107,11 @@ export default function Nav() {
           className="mr-4 cursor-pointer font-extrabold py-1.5 lg:ml-2"
         >
           <Image
-            width={500}
-            height={500}
-            src="/logo/logo.svg"
+            width={300}
+            height={300}
+            src="/logo/pbc-logo.png"
             alt="logo"
-            className="cursor-pointer w-40 md:w-48 lg:w-56 object-cover"
+            className="cursor-pointer w-40 md:w-20 lg:w-20 object-cover"
           />
         </Link>
         <div className="hidden gap-2 lg:flex lg:items-center lg:justify-end w-full">
