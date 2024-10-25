@@ -79,17 +79,19 @@ const ServicesList = ({
               className="w-10 object-cover mr-2"
             />
             {service?.name}
-            <ListItemSuffix>
-              <IconButton
-                variant="text"
-                color="red"
-                onClick={() => {
-                  handleDeleteService(service._id);
-                }}
-              >
-                <MdDelete size={25} />
-              </IconButton>
-            </ListItemSuffix>
+            {role != "admin" && (
+              <ListItemSuffix>
+                <IconButton
+                  variant="text"
+                  color="red"
+                  onClick={() => {
+                    handleDeleteService(service._id);
+                  }}
+                >
+                  <MdDelete size={25} />
+                </IconButton>
+              </ListItemSuffix>
+            )}
           </ListItem>
         ))}
       </div>

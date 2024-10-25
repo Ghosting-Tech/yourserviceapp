@@ -111,7 +111,7 @@ const Hero = () => {
               width={1000}
               height={1000}
               className="ml-auto rounded-lg w-full"
-              src="/image/hero1.webp"
+              src="/image/nur-img-1.jpg"
               alt=""
             />
             <div className="ml-auto">
@@ -119,7 +119,7 @@ const Hero = () => {
                 width={1000}
                 height={1000}
                 className="ml-auto rounded-lg w-full h-full"
-                src="/image/hero3.webp"
+                src="/image/nur-img-2.png"
                 alt=""
               />
             </div>
@@ -128,8 +128,8 @@ const Hero = () => {
             <Image
               width={1000}
               height={1000}
-              className="rounded-lg w-full"
-              src="/image/hero2.webp"
+              className="rounded-lg w-full h-[500px]"
+              src="/image/nur-img-3.jpg"
               alt=""
             />
           </div>
@@ -138,8 +138,8 @@ const Hero = () => {
               <Image
                 width={1000}
                 height={1000}
-                className="rounded-lg w-full h-full"
-                src="/image/hero4.webp"
+                className="rounded-lg w-64 h-52"
+                src="/image/nur-img-4.jpg"
                 alt=""
               />
             </div>
@@ -148,8 +148,8 @@ const Hero = () => {
             <Image
               width={1000}
               height={1000}
-              className="w-full h-full rounded-lg"
-              src="/image/hero5.webp"
+              className="w-full h-52 rounded-lg"
+              src="/image/nur-img.jpg"
               alt=""
             />
           </div>
@@ -175,35 +175,35 @@ const Hero = () => {
         <Image
           width={1000}
           height={1000}
-          src="/image/slider2.webp"
+          src="/image/nur-img-1.jpg"
           alt="image 2"
           className="h-[32rem] w-full object-cover"
         />
         <Image
           width={1000}
           height={1000}
-          src="/image/slider3.webp"
+          src="/image/nur-img-2.png"
           alt="image 3"
           className="h-[32rem] w-full object-cover"
         />
         <Image
           width={1000}
           height={1000}
-          src="/image/slider4.webp"
+          src="/image/nur-img-3.jpg"
           alt="image 4"
           className="h-[32rem] w-full object-cover"
         />
         <Image
           width={1000}
           height={1000}
-          src="/image/slider5.webp"
+          src="/image/nur-img-4.jpg"
           alt="image 5"
           className="h-[32rem] w-full object-cover"
         />
         <Image
           width={1000}
           height={1000}
-          src="/image/slider6.webp"
+          src="/image/nur-img.jpg"
           alt="image 6"
           className="h-[32rem] w-full object-cover"
         />

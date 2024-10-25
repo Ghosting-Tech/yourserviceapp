@@ -133,13 +133,15 @@ const ServiceProviderLocation = ({ serviceProvider, role }) => {
             className="flex flex-col md:flex-row justify-between items-start md:items-center mt-4 md:mt-2 bg-gray-100 p-4 rounded-lg"
           >
             <p className="mb-2 md:mb-0 w-full md:w-auto">{location.location}</p>
-            <button
-              onClick={() => handleDelete(index)}
-              className="bg-red-500 text-white flex justify-center gap-1.5 px-4 w-fit py-2 rounded-md items-center"
-            >
-              Delete
-              <MdDelete size={20} />
-            </button>
+            {role != "admin" && (
+              <button
+                onClick={() => handleDelete(index)}
+                className="bg-red-500 text-white flex justify-center gap-1.5 px-4 w-fit py-2 rounded-md items-center"
+              >
+                Delete
+                <MdDelete size={20} />
+              </button>
+            )}
           </div>
         ))}
       </div>

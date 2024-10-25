@@ -23,39 +23,35 @@ const ServiceProviderDetailsPage = () => {
   const [serviceProvider, setServiceProvider] = useState({});
   const [loading, setLoading] = useState(true);
   const [fetchedServicesFromId, setFetchedServicesFromId] = useState([]);
+  const [serviceId, setServiceId] = useState([]);
 
   function formatDate(dateString) {
     const options = { year: "numeric", month: "long", day: "numeric" };
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", options);
   }
-  const fetchingServices = useCallback(async () => {
-    if (serviceProvider.services?.length > 0) {
-      try {
-        const res = await axios.post(
-          `/api/service-providers/services-from-array-of-id`,
-          serviceProvider.services, // Send the services as part of an object
-          {
-            headers: {
-              "Content-Type": "application/json", // Specify JSON content type
-            },
-          }
-        );
-        setFetchedServicesFromId(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      setFetchedServicesFromId([]); // Clear the list if no services
+  const fetchingServices = async () => {
+    // console.log("calling");
+    // console.log({ sid: serviceId });
+    try {
+      const res = await axios.post(
+        `/api/service-providers/services-from-array-of-id`,
+        serviceId
+      );
+      setFetchedServicesFromId(res.data);
+    } catch (err) {
+      console.log(err);
     }
-  }, [serviceProvider.services]);
+  };
 
   const fetchServiceProvider = async () => {
     try {
       const response = await axios.get(`/api/service-providers/${id}`);
       const data = await response.data;
-      console.log({ Data: data });
+      // console.log({ Data: data });
+      // console.log({ serviceid: data.services });
       setServiceProvider(data);
+      setServiceId(data.services);
     } catch (error) {
       console.error("Failed to fetch service provider:", error);
     } finally {
@@ -109,8 +105,14 @@ const ServiceProviderDetailsPage = () => {
 
   useEffect(() => {
     fetchServiceProvider();
-    fetchingServices();
   }, [id]);
+
+  // Fetch services based on `serviceId` whenever `serviceId` changes
+  useEffect(() => {
+    if (serviceId.length > 0) {
+      fetchingServices();
+    }
+  }, [serviceId]);
 
   if (loading) {
     return (
@@ -121,7 +123,6 @@ const ServiceProviderDetailsPage = () => {
       </div>
     );
   }
-  console.log({ id: fetchedServicesFromId });
   return (
     <div className="p-6">
       <div className="flex justify-between items-center py-6">
