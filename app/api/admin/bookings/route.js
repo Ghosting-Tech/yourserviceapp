@@ -29,6 +29,7 @@ export async function GET(request) {
       { bookingId: { $regex: search, $options: "i" } },
       { fullname: { $regex: search, $options: "i" } },
       { phoneNumber: { $regex: search, $options: "i" } },
+      { "assignedServiceProviders.name": { $regex: search, $options: "i" } },
       // Add more fields if needed
     ];
   }

@@ -1,3 +1,6 @@
+import formatDate from "@/utils/formatDate";
+import sendSmsMessage from "@/utils/sendSmsMessage";
+import shortUrl from "@/utils/shortUrl";
 import { Button } from "@material-tailwind/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -35,16 +38,13 @@ const UpdateServiceStatus = ({ selectedNewBooking, setSelectedNewBooking }) => {
   }
 
   const handleGeneratingCompleteOtp = async () => {
-    const authkey = process.env.NEXT_PUBLIC_AUTH_KEY;
-    const company = "service wallah";
     const name = selectedNewBooking.fullname;
     const mobile = selectedNewBooking.phoneNumber;
-    const country_code = "+91";
-    const SID = "13608";
     const otp = generateOTP();
 
-    const url = `https://api.authkey.io/request?authkey=${authkey}&mobile=${mobile}&country_code=${country_code}&sid=${SID}&company=${company}&otp=${otp}`;
-    await axios.get(url);
+    const message = `Hi ${name}, your service completion OTP is ${otp}. Please share this with your service provider only after you're satisfied with the work. Thank you! - GHOSTING WEBTECH PRIVATE LIMITED`;
+
+    await sendSmsMessage(mobile, message, "1707172966680843543");
 
     const updatedBooking = {
       ...selectedNewBooking,
@@ -103,10 +103,11 @@ const UpdateServiceStatus = ({ selectedNewBooking, setSelectedNewBooking }) => {
 
       const total_amount = (
         selectedNewBooking.cartItems.reduce(
-          (acc, product) => acc + product.price * product.quantity,
+          (acc, product) =>
+            acc + (product.price || 0) * (product.quantity || 0),
           0
         ) +
-        (18 + Number(selectedNewBooking.invoices.total))
+        (18 + Number(selectedNewBooking.invoices?.total || 0))
       ).toFixed(2);
 
       // Percentage for the amount
@@ -129,12 +130,37 @@ const UpdateServiceStatus = ({ selectedNewBooking, setSelectedNewBooking }) => {
       }
       toast.success(paymentResponse.data.message);
 
+      const serviceUrl = `https://demo.yourserviceapp.in/services/${selectedNewBooking.cartItems[0].serviceId}`;
+      const urlResponse = await axios.post("/api/short-url", {
+        url: serviceUrl,
+      });
+
+      const cleanUrl = urlResponse.data.url;
+
+      const message = `Dear ${selectedNewBooking.fullname}, Your booking has been successfully completed by ${selectedNewBooking.assignedServiceProviders.name}. We hope you're satisfied! Please rate your experience here: ${cleanUrl} . -- GHOSTING WEBTECH PRIVATE LIMITED`;
+
+      await sendSmsMessage(
+        selectedNewBooking.phoneNumber,
+        message,
+        "1707172966935296028"
+      );
+
+      const currentDateTime = formatDate();
+
+      const serviceProviderMessage = `Hi ${selectedNewBooking.assignedServiceProviders.name}, Thank you for completing the service for ${selectedNewBooking.fullname} on ${currentDateTime}. Please log in and update your dashboard. - GHOSTING WEBTECH PRIVATE LIMITED`;
+
+      await sendSmsMessage(
+        selectedNewBooking.assignedServiceProviders.phoneNumber,
+        serviceProviderMessage,
+        "1707172967160148280"
+      );
+
       // handle sending notification to user after completing the service
       axios.post(`/api/send-notification/by-user-phone`, {
         phoneNumber: selectedNewBooking.phoneNumber,
         title: "Your service has been completed!",
         message: "See details.",
-        link: `user/bookings/${selectedNewBooking._id}`
+        link: `user/bookings/${selectedNewBooking._id}`,
       });
     } catch (err) {
       console.log(err);

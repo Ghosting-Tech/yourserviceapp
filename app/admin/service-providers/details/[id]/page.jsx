@@ -106,6 +106,8 @@ const ServiceProviderDetailsPage = () => {
 
   useEffect(() => {
     fetchServiceProvider();
+    fetchingServices();
+    // eslint-disable-next-line
   }, [id]);
 
   // Fetch services based on `serviceId` whenever `serviceId` changes

@@ -1,5 +1,4 @@
 "use client";
-import Footer from "@/components/Footer";
 import { storage } from "@/firebase";
 import {
   Button,
@@ -11,7 +10,7 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaInfoCircle } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
@@ -38,16 +37,6 @@ const CreateServiceProvider = () => {
     role: "service-provider",
     active: false,
     image: null,
-  });
-  const [errors, setErrors] = useState({
-    name: "",
-    phoneNumber: "",
-    email: "",
-    gender: "",
-    aadhar: "",
-    city: "",
-    password: "",
-    image: "",
   });
   const validateInputs = () => {
     let isValid = true; // Track the validity of inputs
@@ -504,7 +493,6 @@ const CreateServiceProvider = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

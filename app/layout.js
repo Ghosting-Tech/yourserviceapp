@@ -11,7 +11,7 @@ export const metadata = {
   title: "Yourserviceapp",
   description: "Find the best service at Yourserviceapp",
   icons: {
-    icon: "/icon.ico",
+    icon: "/favicon.ico",
   },
 };
 

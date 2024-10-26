@@ -64,7 +64,7 @@ const Footer = () => {
               +91 9470017395
             </li>
             <li className="flex items-center gap-1">
-              <Image src={'/logo/ghosting.png'} width={100} height={100} className="w-8" /> 
+              <Image src={'/logo/ghosting.png'} width={100} height={100} className="w-8" alt="ghosting-tech" /> 
               Powered by{" "}
               <Link target="_blank" href={`https://ghosting.in/`} className="underline text-blue-700">
                 Ghosting Tech

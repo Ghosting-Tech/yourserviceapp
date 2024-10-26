@@ -38,10 +38,6 @@ const Page = () => {
 
   useEffect(() => {
     if (booking && booking.assignedServiceProviders && user) {
-      console.log({
-        User: user?._id,
-        Booking: booking?.assignedServiceProviders?._id,
-      });
       if (booking.assignedServiceProviders._id !== user._id) {
         router.back();
       }
