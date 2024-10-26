@@ -10,6 +10,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import ServiceProviderLocation from "@/components/service-provider/ServiceProviderLocation";
 import ServicesList from "@/components/service-provider/ServiceList";
+import Link from "next/link";
 
 const ServiceProviderDetailsPage = () => {
   const { id } = useParams();
@@ -211,6 +212,17 @@ const ServiceProviderDetailsPage = () => {
       </div>
       {/* Dialog Footer */}
       <div className="flex items-center gap-2 justify-end p-0 py-5">
+        <Link href={`/admin/payments?search=${serviceProvider.name}`}>
+          <Button
+            variant="gradient"
+            size="sm"
+            color="indigo"
+            className="flex items-center gap-1 rounded"
+          >
+            view payout
+            <AiOutlineDelete />
+          </Button>
+        </Link>
         <Button
           variant="gradient"
           size="sm"

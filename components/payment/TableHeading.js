@@ -7,6 +7,7 @@ import { toast } from "sonner";
 const TableHeading = ({
   serviceProvider = false,
   setSearchQuery,
+  searchQuery,
   setStatus,
   fetchingData,
 }) => {
@@ -44,6 +45,7 @@ const TableHeading = ({
             onChange={(e) => {
               setSearchQuery(e.target.value);
             }}
+            value={searchQuery}
             label="Search By Service Provider, Phone number"
             icon={<MagnifyingGlassIcon className="w-4 h-4" />}
           />
