@@ -169,11 +169,7 @@ const UpdateServiceStatus = ({ selectedNewBooking, setSelectedNewBooking }) => {
 
   return (
     <>
-      {selectedNewBooking.completed ? (
-        <div className="text-lg py-4 md:py-8 lg:py-0 bg-white shadow-lg w-full flex justify-center items-center h-full rounded-lg text-teal-500">
-          Service is completed!
-        </div>
-      ) : (
+      {!selectedNewBooking.completed &&
         <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col gap-4">
           <div className="md:text-xl sm:text-xl text-lg text-gray-500 font-normal flex justify-center gap-2">
             Complete the Service
@@ -216,7 +212,7 @@ const UpdateServiceStatus = ({ selectedNewBooking, setSelectedNewBooking }) => {
             Service Completed
           </Button>
         </div>
-      )}
+      }
     </>
   );
 };

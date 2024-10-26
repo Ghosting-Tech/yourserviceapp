@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { VscLoading } from "react-icons/vsc";
-import UserBookingList from "@/components/bookings/user/UserBookingList";
 import { toast } from "sonner";
 import PaginationBtn from "@/components/PaginationBtn";
 import { useSearchParams } from "next/navigation";
+import Loading from "@/components/Loading";
+import BookingList from "@/components/bookings/bookingList";
 
-const Page = () => {
+const BookingPage = () => {
   const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(true);
@@ -47,18 +47,14 @@ const Page = () => {
   return (
     <div>
       {loading ? (
-        <div className="flex justify-center items-center h-full">
-          <div className="text-lg font-semibold animate-spin my-56">
-            <VscLoading size={50} />
-          </div>
-        </div>
+        <Loading />
       ) : bookings.length > 0 ? (
         <div className="px-10 flex flex-col gap-4">
           <h2 className="text-3xl text-blue-500 font-semibold text-center">
             Your Bookings!
           </h2>
           <div className="h-px bg-gray-300 w-full my-4"></div>
-          <UserBookingList bookings={bookings} />
+          <BookingList forUser={true} bookings={bookings} />
           <PaginationBtn totalPages={totalPages} />
         </div>
       ) : (
@@ -70,4 +66,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default BookingPage;

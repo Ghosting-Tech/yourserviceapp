@@ -75,7 +75,7 @@ const PaymentStatusPage = () => {
           <p className="text-gray-600 mb-4">
             Your transaction has been completed successfully.
           </p>
-          <Link href={`/user/bookings`}>
+          <Link href={`/user/bookings/${bookingId}`}>
             <Button variant="gradient" color="teal">
               Check order
             </Button>

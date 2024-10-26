@@ -99,16 +99,17 @@ const OnGoingBooking = ({
             the scheduled time.
           </p>
           <div className="flex items-center justify-end gap-2 w-fit whitespace-nowrap">
-            {!cancelled && (
-              <Button
-                variant="outlined"
-                color="red"
-                disabled={disableCancelBookingButton}
-                onClick={handleCancellationReasonDialog}
-              >
-                Cancel Booking
-              </Button>
-            )}
+            {!cancelled &&
+              !booking.otpVerified && (
+                <Button
+                  variant="outlined"
+                  color="red"
+                  disabled={disableCancelBookingButton}
+                  onClick={handleCancellationReasonDialog}
+                >
+                  Cancel Booking
+                </Button>
+              )}
             <CancelBookingDialog
               booking={booking}
               cancellationReasonDialog={cancellationReasonDialog}

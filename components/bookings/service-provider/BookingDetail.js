@@ -1,6 +1,5 @@
 import { storage } from "@/firebase";
 import { Button } from "@material-tailwind/react";
-import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import {
   deleteObject,
@@ -15,7 +14,6 @@ import { MdOutlineCloudUpload } from "react-icons/md";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import UpdateServiceStatus from "./UpdateServiceStatus";
-import Invoice from "./Invoice";
 import { useRouter } from "next/navigation";
 import UserDetail from "@/components/admin/bookings/single-booking/UserDetail";
 import LocationDetails from "@/components/admin/bookings/single-booking/LocationDetails";
@@ -24,6 +22,7 @@ import ServiceDetails from "@/components/admin/bookings/single-booking/ServiceDe
 import InvoiceDetail from "@/components/admin/bookings/single-booking/InvoiceDetail";
 import { toast } from "sonner";
 import { AiOutlineLoading } from "react-icons/ai";
+import Invoice from "./Invoice";
 
 const BookingDetail = ({ booking, setBooking }) => {
   const user = useSelector((state) => state.user.user);
@@ -342,7 +341,7 @@ const BookingDetail = ({ booking, setBooking }) => {
               </div>
             </div>
           </div>
-          {booking.otpVerified && (
+          {booking.otpVerified && !booking.completed && (
             <Invoice
               selectedBooking={booking}
               setSelectedBooking={setBooking}

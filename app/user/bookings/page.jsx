@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import Page from "@/components/bookings/user/BookingPage";
+import BookingPage from "@/components/bookings/user/BookingPage";
 
 const page = () => {
   return (
@@ -13,7 +13,7 @@ const page = () => {
         </div>
       }
     >
-      <Page />
+      <BookingPage />
     </Suspense>
   );
 };
