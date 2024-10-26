@@ -5,8 +5,6 @@ import { NextResponse } from "next/server";
 import Service from "@/models/service-model";
 import { getDistance } from "@/utils/distance";
 import User from "@/models/users";
-import sendSmsMessage from "@/utils/sendSmsMessage";
-import axios from "axios";
 import shortUrl from "@/utils/shortUrl";
 
 export const dynamic = "force-dynamic";
@@ -73,6 +71,8 @@ function generateOTP() {
   const otp = Math.floor(1000 + Math.random() * 9000);
   return otp.toString();
 }
+
+// Create new service
 
 export async function POST(request) {
   try {
