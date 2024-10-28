@@ -114,6 +114,7 @@ const ServiceProviderDetailsPage = () => {
     if (serviceId.length > 0) {
       fetchingServices();
     }
+    //eslint-disable-next-line
   }, [serviceId]);
 
   if (loading) {
