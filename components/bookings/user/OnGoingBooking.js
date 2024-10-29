@@ -6,7 +6,7 @@ import {
 } from "@material-tailwind/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPhone, FaWhatsapp } from "react-icons/fa";
 import { IoMdMailOpen, IoMdOpen } from "react-icons/io";
 import { IoMail } from "react-icons/io5";
@@ -24,6 +24,7 @@ import UserServiceProviderDetail from "@/components/admin/bookings/single-bookin
 import BookingHeader from "@/components/admin/bookings/single-booking/BookingHeader";
 import LocationDetails from "@/components/admin/bookings/single-booking/LocationDetails";
 import ContactQuery from "../ContactQuery";
+import Review from "@/components/services/review/Review";
 
 const options = {
   year: "numeric",
@@ -82,6 +83,33 @@ const OnGoingBooking = ({
       toast.error("Error on initializing payment!");
     }
   };
+
+  // Review
+  const [rating, setRating] = useState(0);
+  const [service, setService] = useState({});
+
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        if (booking.completed) {
+          const response = await fetch(
+            `/api/services/${booking.cartItems[0].serviceId}`
+          );
+          const data = await response.json();
+          console.log(data.service);
+          if (!data.success) {
+            toast.error(data.message);
+            return;
+          }
+          setService(data.service);
+        }
+      } catch (error) {
+        toast.error(`Error fetching service!`);
+        console.log("Error fetching service:", error);
+      }
+    };
+    fetchService();
+  }, [booking]);
   return (
     <div key={booking._id} className="p-6 max-w-5xl mx-auto">
       <BookingHeader booking={booking} />
@@ -92,6 +120,16 @@ const OnGoingBooking = ({
 
       <ContactQuery booking={booking} />
 
+      {booking.completed && service._id && (
+        <Review
+          service={service}
+          serviceId={service._id}
+          rating={rating}
+          setRating={setRating}
+          setService={setService}
+        />
+      )}
+
       {!booking.completed && (
         <section className="w-full mt-4 flex justify-between items-center flex-col lg:flex-row gap-4">
           <p className="font-medium text-red-600 text-sm">
@@ -99,7 +137,7 @@ const OnGoingBooking = ({
             the scheduled time.
           </p>
           <div className="flex items-center justify-end gap-2 w-fit whitespace-nowrap">
-            {!cancelled && (
+            {!cancelled && !booking.otpVerified && (
               <Button
                 variant="outlined"
                 color="red"

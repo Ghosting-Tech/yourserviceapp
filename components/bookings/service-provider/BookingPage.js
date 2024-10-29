@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { VscLoading } from "react-icons/vsc";
 import { toast } from "sonner";
-import ServiceProviderBookingList from "@/components/bookings/service-provider/ServiceProviderBookingList";
 import { useSearchParams } from "next/navigation";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import Link from "next/link";
 import { Button } from "@material-tailwind/react";
 import PaginationBtn from "@/components/PaginationBtn";
+import BookingList from "../bookingList";
 
 const Booking = () => {
   const searchParams = useSearchParams();
@@ -60,7 +60,7 @@ const Booking = () => {
             Your Bookings!
           </h2>
           <div className="h-px bg-gray-300 w-full my-4"></div>
-          <ServiceProviderBookingList booking={bookings} />
+          <BookingList forUser={false} bookings={bookings} />
           <PaginationBtn totalPages={totalPages} />
         </div>
       ) : (

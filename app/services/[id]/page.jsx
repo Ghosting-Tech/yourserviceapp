@@ -26,6 +26,9 @@ import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
 import axios from "axios";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import GiveReview from "@/components/services/review/GiveReview";
+import Review from "@/components/services/review/Review";
+import Loading from "@/components/Loading";
 
 const NextArrow = ({ onClick }) => {
   return (
@@ -77,54 +80,6 @@ const sliderSettings = {
   ],
 };
 
-const ReviewCard = ({ name, review, rating, image }) => (
-  <div className="bg-white p-4 rounded-xl flex space-x-4">
-    {/* Profile Image */}
-    <div className="w-14 h-14">
-      {image?.url ? (
-        <Image
-          width={100}
-          height={100}
-          src={image?.url}
-          alt={name}
-          className="rounded-full w-full h-full object-cover"
-        />
-      ) : (
-        <div className="w-full h-full text-xl text-black bg-gray-400 rounded-full flex justify-center items-center">
-          {name && name[0].toUpperCase()}
-        </div>
-      )}
-    </div>
-
-    {/* Review Content */}
-    <div className="flex-1">
-      <div className="flex justify-between">
-        <div>
-          {/* Stars */}
-          <div className="flex mb-1">
-            {Array.from({ length: 5 }, (e, index) => (
-              <span key={index} className="text-yellow-400">
-                {rating >= index + 1 ? (
-                  <IoIosStar size={16} />
-                ) : rating >= index + 0.5 ? (
-                  <IoIosStarHalf size={16} />
-                ) : (
-                  <IoIosStarOutline size={16} />
-                )}
-              </span>
-            ))}
-          </div>
-          {/* Name */}
-          <h3 className="text-lg font-semibold">{name}</h3>
-        </div>
-      </div>
-      {/* Review Text */}
-      <p className="text-gray-600 mt-2 break-words whitespace-normal text-sm">
-        {review}
-      </p>
-    </div>
-  </div>
-);
 const Service = () => {
   const { id } = useParams();
 
@@ -169,7 +124,6 @@ const Service = () => {
       try {
         const res = await fetch(`/api/services/${id}`, { cache: "no-store" });
         const data = await res.json();
-        console.log(data);
         setService(data.service);
       } catch (err) {
         console.log(err);
@@ -181,88 +135,7 @@ const Service = () => {
     setCartItems(JSON.parse(localStorage.getItem("cart")) || []);
   }, [id]);
 
-  const [review, setReview] = useState({
-    name: "",
-    image: {
-      url: "",
-      name: "",
-    },
-    review: "",
-    rating: 0,
-  });
-
-  const user = useSelector((state) => state.user.user);
-
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    // Assuming you have an endpoint to submit a review
-    try {
-      const updatedReview = {
-        ...review,
-        name: user.name,
-        image: user.image,
-      };
-      const updatedService = {
-        ...service,
-        reviews: [...service.reviews, updatedReview],
-      };
-      const res = await axios.put(`/api/services/${id}`, updatedService);
-      if (res.data.success) {
-        // Add the new review to the existing reviews
-        setService(res.data.data);
-        // Reset the new review form
-        setReview({
-          image: {
-            url: "",
-            name: "",
-          },
-          name: "",
-          review: "",
-          rating: 0,
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const [ratingArray, setRatingArray] = useState([]);
   const [rating, setRating] = useState(0);
-
-  useEffect(() => {
-    if (service?.reviews?.length) {
-      setRatingArray(service.reviews.map((review) => review.rating));
-    }
-  }, [service]);
-
-  useEffect(() => {
-    if (ratingArray.length > 0) {
-      const countRatings = ratingArray.reduce((acc, rating) => {
-        acc[rating] = (acc[rating] || 0) + 1;
-        return acc;
-      }, {});
-
-      const {
-        1: r1 = 0,
-        2: r2 = 0,
-        3: r3 = 0,
-        4: r4 = 0,
-        5: r5 = 0,
-      } = countRatings;
-
-      const totalRatings = r5 + r4 + r3 + r2 + r1;
-
-      if (totalRatings > 0) {
-        const result =
-          (5 * r5 + 4 * r4 + 3 * r3 + 2 * r2 + 1 * r1) / totalRatings;
-        setRating(result.toFixed(1));
-      } else {
-        setRating(0); // or handle this case as you prefer
-      }
-    } else {
-      setRating(0); // No ratings available
-    }
-  }, [ratingArray]);
 
   return (
     <>
@@ -271,14 +144,11 @@ const Service = () => {
           loading ? "opacity-100" : "opacity-0"
         } ${loading ? "z-50" : "-z-50"}`}
       >
-        <div className="flex flex-col items-center gap-4">
-          <div className="loaction-loader"></div>
-          <div className="text-2xl font-julius">Loading</div>
-        </div>
+        <Loading />
       </div>
       <div
         className={`${
-          loading ? "hidden" : "bloack"
+          loading ? "hidden" : "block"
         } transition-all duration-700`}
       >
         <Drawer
@@ -368,13 +238,21 @@ const Service = () => {
           <div className="flex flex-col lg:flex-row gap-6 w-full">
             <div className="w-full lg:w-2/3 p-4 flex flex-col justify-center gap-6 rounded-lg">
               <div className="flex items-center gap-2">
-                <Image
-                  width={100}
-                  height={100}
-                  src={service.icon?.url} // Replace with actual path
-                  alt="Service Icon"
-                  className="w-24 h-24 object-cover rounded-lg"
-                />
+                {service.icon?.url ? (
+                  <Image
+                    width={100}
+                    height={100}
+                    src={service.icon.url}
+                    alt="Service Icon"
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
+                ) : (
+                  <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
+                    <span>Icon</span>{" "}
+                    {/* Placeholder if no icon is available */}
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-2 justify-center">
                   <h2 className="lg:text-4xl md:text-5xl sm:text-5xl  text-4xl leading-tight text-gray-700 font-bold  ">
                     {service.name}
@@ -642,86 +520,13 @@ const Service = () => {
             )}
           </div>
         </div>
-        <div className="container mx-auto px-4 py-8 ">
-          <div className="flex items-center md:flex-row flex-col justify-between mb-4">
-            <h2 className="text-2xl font-julius font-bold mb-4">
-              Reviews by users
-            </h2>
-            <div className="flex items-center mb-4">
-              <div className="flex items-center">
-                <div className="flex">
-                  {Array.from({ length: 5 }, (e, index) => {
-                    let stars = rating;
-                    return (
-                      <span key={index} className="text-[#FFB800]">
-                        {stars >= index + 1 ? (
-                          <IoIosStar size={15} />
-                        ) : stars >= index + 0.5 ? (
-                          <IoIosStarHalf size={15} />
-                        ) : (
-                          <IoIosStarOutline size={15} />
-                        )}
-                      </span>
-                    );
-                  })}
-                </div>
-                <span className="ml-1">{rating}</span>
-              </div>
-              <span className="ml-2 text-gray-700">
-                | {service?.reviews?.length} reviews
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-wrap h-full">
-            {service?.reviews?.length === 0 ? (
-              <div className="w-full h-full flex gap-2 flex-col justify-center items-center">
-                <div className="font-julius text-2xl">
-                  Uh oh, There is no review yet.
-                </div>
-                <div className="flex gap-1 items-center text-gray-700">
-                  Make sure to give a review if you liked {service.name}{" "}
-                  <FaArrowDown />
-                </div>
-              </div>
-            ) : (
-              <div className="w-full overflow-auto max-h-96 grid lg:grid-cols-2 md:grid-cols-1 gap-4">
-                {service.reviews?.map((review, index) => (
-                  <ReviewCard key={review.id} {...review} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="p-4 bg-white shadow rounded-lg space-x-4 mx-4 md:mx-12 mb-12">
-          <h3 className="text-2xl text-blue-500 font-semibold mb-4 text-center">
-            Give a Review
-          </h3>
-          <form onSubmit={handleReviewSubmit} className="space-y-4">
-            <div className="flex gap-2">
-              <label className="block text-lg font-medium text-gray-700">
-                Rating
-              </label>
-              <Rating
-                value={review.rating}
-                required
-                onChange={(e) => setReview({ ...review, rating: e })}
-              />
-            </div>
-            <Textarea
-              label="Message"
-              color="blue-gray"
-              value={review.review}
-              onChange={(e) => setReview({ ...review, review: e.target.value })}
-              required
-              rows="5"
-            />
-            <div className="flex justify-end">
-              <Button type="submit" color="blue">
-                Submit Review
-              </Button>
-            </div>
-          </form>
-        </div>
+        <Review
+          service={service}
+          serviceId={id}
+          rating={rating}
+          setRating={setRating}
+          setService={setService}
+        />
       </div>
     </>
   );

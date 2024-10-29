@@ -116,16 +116,22 @@ export async function DELETE(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
     const data = await request.json();
+
+    if (!data._id) {
+      return NextResponse.json(
+        { success: false, message: "Service ID not found" },
+        { status: 400 }
+      );
+    }
 
     // Connect to MongoDB if not already connected
     await connectMongoDB();
 
     // Update the service by ID
-    const updatedService = await Service.findByIdAndUpdate(id, data, {
+    const updatedService = await Service.findByIdAndUpdate(data._id, data, {
       new: true,
-    });
+    }).populate("subServices");
 
     if (!updatedService) {
       return NextResponse.json(
@@ -143,12 +149,13 @@ export async function PUT(request, { params }) {
       { status: 200 }
     );
   } catch (error) {
+    console.log("update service error", error);
     // Handle unexpected errors
     return NextResponse.json(
       {
         success: false,
         message: "Failed to update the service",
-        error: error.message,
+        error: error,
       },
       { status: 500 }
     );
