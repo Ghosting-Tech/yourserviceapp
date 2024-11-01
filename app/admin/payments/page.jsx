@@ -4,19 +4,21 @@ import PaginationBtn from "@/components/PaginationBtn";
 import axios from "axios";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PaymentTable from "@/components/payment/PaymentTable";
 import TableHeading from "@/components/payment/TableHeading";
 
 const PaymentsPageContent = () => {
   const [payments, setPayments] = useState([]);
   const [meta, setMeta] = useState({});
-  const [searchQuery, setSearchQuery] = useState("");
   const [status, setStatus] = useState("both");
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const searchParams = useSearchParams();
+  const search = searchParams.get("search");
   const page = searchParams.get("page") || 1;
+  const [searchQuery, setSearchQuery] = useState(search || "");
 
   const fetchingData = useCallback(async () => {
     try {
@@ -69,12 +71,17 @@ const PaymentsPageContent = () => {
     fetchingData();
   }, [fetchingData]);
 
+  useEffect(() => {
+    router.push(`/admin/payments?page=${page}&search=${searchQuery}`);
+  }, [searchQuery, page, router]);
+
   if (loading) return <Loading />;
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4 mb-6">
       <TableHeading
         setSearchQuery={setSearchQuery}
+        searchQuery={searchQuery}
         setStatus={setStatus}
         fetchingData={fetchingData}
       />

@@ -17,6 +17,37 @@ const userSchema = new Schema(
         name: "",
       },
     },
+    id1: {
+      name: {
+        type: String,
+      },
+      image: {
+        url: {
+          type: String,
+          default: "",
+        },
+        name: {
+          type: String,
+          default: "",
+        },
+      },
+    },
+    id2: {
+      name: {
+        type: String,
+      },
+      image: {
+        url: {
+          type: String,
+          default: "",
+        },
+        name: {
+          type: String,
+          default: "",
+        },
+      },
+    },
+
     email: {
       type: String,
       unique: true,
@@ -35,6 +66,11 @@ const userSchema = new Schema(
     },
     city: {
       type: String,
+      default: "",
+    },
+    state: {
+      type: String,
+      default: "",
     },
     active: {
       type: Boolean,
