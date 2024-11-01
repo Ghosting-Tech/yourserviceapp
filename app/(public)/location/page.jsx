@@ -67,6 +67,14 @@ export default function Location() {
       const data = await response.json();
       if (data.results && data.results.length > 0) {
         setAddress(data.results[0].formatted_address);
+        const addressComponents = data.results[0].address_components;
+        const city = addressComponents.find((component) =>
+          component.types.includes("locality")
+        ).long_name;
+        const state = addressComponents.find((component) =>
+          component.types.includes("administrative_area_level_1")
+        ).long_name;
+        console.log(`${city}, ${state}`);
       } else {
         setAddress("Address not found");
       }
@@ -83,6 +91,7 @@ export default function Location() {
     setMarkerPosition(newLocation);
     setLocation(newLocation);
     getAddress(newLocation);
+    console.log(newLocation);
     localStorage.setItem("location", JSON.stringify(newLocation));
   }, []);
 

@@ -17,6 +17,7 @@
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "chart.js": "^4.4.3",
+    "country-state-city": "^3.2.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.11",
     "firebase": "^10.11.0",

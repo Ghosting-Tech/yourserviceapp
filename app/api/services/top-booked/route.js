@@ -3,33 +3,64 @@ import connectMongoDB from "@/libs/mongodb";
 import Service from "@/models/service-model";
 import { NextResponse } from "next/server";
 
-export async function GET(request) {
-  const { searchParams } = new URL(request.url);
+export async function POST(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const limit = Math.min(parseInt(searchParams.get("limit")) || 10, 100);
 
-  const limit = parseInt(searchParams.get("limit")) || 10;
-  await connectMongoDB();
+    const data = await request.json();
+    await connectMongoDB();
 
-  const user = await isLoggedIn(request);
-  let query = {};
+    const user = await isLoggedIn(request);
 
-  if (user?.user?.role === "admin") {
-    query = {}; // No filter for admin
-  } else {
-    query = { status: "active" };
+    // Define the base match query for services
+    let matchQuery = {};
+    if (user?.user?.role !== "admin") {
+      if (!data.city) {
+        return NextResponse.json(
+          { error: "City is required for non-admin users." },
+          { status: 400 }
+        );
+      }
+      matchQuery = { status: "active", cities: data.city };
+    }
+
+    // Use aggregation pipeline to match and conditionally filter sub-services
+    const services = await Service.aggregate([
+      { $match: matchQuery },
+      { $sort: { createdAt: -1 } },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "subservices", // the name of the sub-services collection
+          localField: "subServices",
+          foreignField: "_id",
+          as: "subServices",
+        },
+      },
+      ...(user?.user?.role !== "admin"
+        ? [
+            {
+              $set: {
+                subServices: {
+                  $filter: {
+                    input: "$subServices",
+                    as: "subService",
+                    cond: { $eq: ["$$subService.status", "active"] },
+                  },
+                },
+              },
+            },
+          ]
+        : []),
+    ]);
+
+    return NextResponse.json(services, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    return NextResponse.json(
+      { error: "An error occurred while fetching services." },
+      { status: 500 }
+    );
   }
-
-  let services = await Service.find(query).sort({
-    createdAt: -1,
-  })
-  .limit(limit).populate("subServices");
-
-  if (user?.user?.role !== "admin") {
-    services = services.map((service) => {
-      service.subServices = service.subServices.filter(
-        (subService) => subService.status === "active"
-      );
-      return service;
-    });
-  }
-  return NextResponse.json(services, { status: 201 });
 }

@@ -45,7 +45,10 @@ export async function GET(request, { params }) {
       );
     }
 
-    return NextResponse.json({ success: true, service }, { status: 200 });
+    return NextResponse.json(
+      { success: true, service, message: "Service fetched successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     // Handle unexpected errors
     return NextResponse.json(
