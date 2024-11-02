@@ -930,7 +930,7 @@ const CreateServiceProvider = () => {
                     <Typography
                       variant="small"
                       color="gray"
-                      className="flex items-center gap-1 cursor-help w-full"
+                      className="hidden lg:flex items-center gap-1 cursor-help w-full"
                     >
                       Password requirements
                       <svg
@@ -952,8 +952,8 @@ const CreateServiceProvider = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2 items-center w-full">
-                <h6>
+              <div className="md:flex gap-2 items-center w-full">
+                <h6 className="w-36 text-black font-semibold mb-5 md:mb-0">
                   Profile Image
                   <span className="text-red-400 ml-1">*</span>
                 </h6>
