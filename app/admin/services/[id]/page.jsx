@@ -36,6 +36,9 @@ import { storage } from "@/firebase";
 import Image from "next/image";
 import { toast } from "sonner";
 import SubServiceCard from "@/components/admin/services/SubServiceCard";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import location from "@/assets/location.json";
+import Loading from "@/components/Loading";
 
 const ServicePage = () => {
   const { id } = useParams();
@@ -93,6 +96,7 @@ const ServicePage = () => {
     name: "",
     status: "",
     price: "",
+    cities: [],
     icon: {
       url: "",
       name: "",
@@ -231,6 +235,30 @@ const ServicePage = () => {
     }
   };
 
+  const [selectedState, setSelectedState] = useState("Bihar");
+  const [selectedCity, setSelectedCity] = useState("Patna");
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    // Update cities whenever the selected state changes
+    if (selectedState) {
+      setCities(location[selectedState]);
+      setSelectedCity(location[selectedState][0]);
+    } else {
+      setCities([]);
+    }
+  }, [selectedState]);
+
+  const handleStateChange = (e) => {
+    const state = e; // Check if e.target exists; if not, use e directly
+    setSelectedState(state);
+  };
+
+  const handleCityChange = (e) => {
+    const city = e;
+    setSelectedCity(city);
+  };
+
   const handleUpdateServiceDetails = async () => {
     try {
       const response = await fetch(`/api/services/${id}`, {
@@ -245,9 +273,9 @@ const ServicePage = () => {
         toast.error(data.message);
       }
       toast.success(data.message);
-      setService(data);
-      setUpdateService(data);
-      setSubServices(data.subServices);
+      setService(data.data);
+      setUpdateService(data.data);
+      setSubServices(data.data.subServices);
       handleOpen2();
     } catch (err) {
       console.log(err);
@@ -392,12 +420,7 @@ const ServicePage = () => {
   return (
     <>
       {loading ? (
-        <div className="grid place-items-center min-h-screen">
-          <div className="flex flex-col items-center gap-4">
-            <div className="loaction-loader"></div>
-            <div className="text-2xl font-julius">Loading</div>
-          </div>
-        </div>
+        <Loading />
       ) : (
         <div>
           <div className="px-4 md:px-20 my-6 flex flex-col gap-6">
@@ -478,6 +501,7 @@ const ServicePage = () => {
                       </Option>
                     </Select>
                     <Textarea
+                      className="bg-white"
                       label="Description"
                       color="indigo"
                       value={updateService.description}
@@ -488,6 +512,101 @@ const ServicePage = () => {
                         })
                       }
                     />
+                    <Select
+                      label="State"
+                      className="bg-white"
+                      name="state"
+                      color="indigo"
+                      value={selectedState}
+                      onChange={handleStateChange}
+                      required
+                    >
+                      {Object.keys(location).map((state) => (
+                        <Option key={state} value={state}>
+                          {state}
+                        </Option>
+                      ))}
+                    </Select>
+                    <div className="flex items-center gap-4 flex-col md:flex-row">
+                      <Select
+                        className="bg-white"
+                        label="City"
+                        name="city"
+                        color="indigo"
+                        value={selectedCity}
+                        onChange={handleCityChange}
+                        required
+                      >
+                        {cities.map((city) => (
+                          <Option key={city} value={city}>
+                            {city}
+                          </Option>
+                        ))}
+                      </Select>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          if (updateService.cities.includes(selectedCity)) {
+                            toast.error("City already selected");
+                            return;
+                          }
+                          setServiceData({
+                            ...serviceData,
+                            cities: [...serviceData.cities, selectedCity],
+                          });
+                          setUpdateService({
+                            ...updateService,
+                            cities: [...updateService.cities, selectedCity],
+                          });
+                        }}
+                        color="purple"
+                        className="flex items-center justify-center gap-2 w-fit whitespace-nowrap"
+                      >
+                        <PlusIcon className="w-6 h-6" /> Add City
+                      </Button>
+                    </div>
+                    <div className="w-full max-w-4xl mx-auto p-6 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                        Selected Cities
+                      </h2>
+                      <div className="flex flex-wrap gap-4">
+                        {updateService.cities.map((city, index) => (
+                          <div
+                            key={index}
+                            className="group flex items-center bg-white rounded-full pl-4 pr-2 py-2 shadow-md transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105"
+                          >
+                            <span className="text-gray-700 font-medium mr-2 text-sm">
+                              {city}
+                            </span>
+                            <button
+                              onClick={() => {
+                                setServiceData({
+                                  ...serviceData,
+                                  cities: serviceData.cities.filter(
+                                    (c) => c !== city
+                                  ),
+                                });
+                                setUpdateService({
+                                  ...updateService,
+                                  cities: updateService.cities.filter(
+                                    (c) => c !== city
+                                  ),
+                                });
+                              }}
+                              className="p-1 rounded-full bg-gray-100 text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors duration-300 ease-in-out"
+                              aria-label={`Remove ${city}`}
+                            >
+                              <XMarkIcon className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      {updateService.cities.length === 0 && (
+                        <p className="text-gray-500 mt-4">
+                          No cities selected. Add some cities to get started!
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -633,20 +752,16 @@ const ServicePage = () => {
                   height={1000}
                   src={service.icon?.url}
                   alt=""
-                  className="w-48 h-60 rounded-md object-cover drop-shadow-lg"
+                  className="w-60 aspect-square rounded-md object-cover drop-shadow-lg"
                 />
                 <div className="flex flex-col gap-2 justify-center">
                   <div>
                     <span
                       className={`border ${
                         service.status === "active"
-                          ? "bg-teal-100"
-                          : "bg-red-100"
-                      }  text-xs ${
-                        service.status === "active"
-                          ? "text-teal-700"
-                          : "text-red-700"
-                      }  px-2 py-1 rounded-full`}
+                          ? "bg-teal-100 text-teal-700"
+                          : "bg-red-100 text-red-700"
+                      }  text-xs px-2 py-1 rounded-full`}
                     >
                       {service.status}
                     </span>

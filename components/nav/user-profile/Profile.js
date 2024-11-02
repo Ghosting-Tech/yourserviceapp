@@ -238,15 +238,19 @@ const Profile = ({
 
   const handleThrowingOtp = async () => {
     if (forgetPasswordNumber.length != 10) return;
-    const authkey = process.env.NEXT_PUBLIC_AUTH_KEY;
-    const name = "service wallah account";
-    const mobile = forgetPasswordNumber;
-    const country_code = "+91";
-    const SID = "13608";
     const otp = generateOTP();
     setForgotPasswordGeneratedOtp(otp);
-    const url = `https://api.authkey.io/request?authkey=${authkey}&mobile=${mobile}&country_code=${country_code}&sid=${SID}&company=${name}&otp=${otp}`;
-    await axios.get(url);
+
+    const sms = await sendSmsMessage(
+      forgetPasswordNumber,
+      `Dear user, Your OTP for phone number verification is ${otp}. Please enter this OTP to complete the registration process. Regards, Ghosting Webtech Pvt Ltd`,
+      "1707172906187016975"
+    );
+
+    if (!sms.success) {
+      toast.error("Failed to send verification OTP.");
+      return;
+    }
     setOtpSended(true);
   };
   const [updatedPassword, setUpdatedPassword] = useState("");

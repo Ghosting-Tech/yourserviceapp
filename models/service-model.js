@@ -29,10 +29,14 @@ const serviceSchema = new Schema(
     subServices: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Sub", // Now "Sub" will be properly recognized
+        ref: "Sub",
       },
     ],
     reviews: {
+      type: Array,
+      default: [],
+    },
+    cities: {
       type: Array,
       default: [],
     },
