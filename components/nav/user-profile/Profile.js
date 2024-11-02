@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Button,
@@ -132,7 +132,7 @@ const Profile = ({
       setEmailError(""); // Clear the error if the email is valid
     }
   };
-  const verifyingRegisterOtp = async () => {
+  const sendingRegisterOtp = async () => {
     if (
       !registerData.name ||
       !registerData.phoneNumber ||
@@ -172,6 +172,9 @@ const Profile = ({
     }
 
     setOpen4(true);
+
+    setIsOtpButtonDisabled(true);
+    setTimer(30);
   };
   async function handleRegister(e) {
     e.preventDefault();
@@ -282,6 +285,19 @@ const Profile = ({
       console.error(err);
     }
   };
+  const [isOtpButtonDisabled, setIsOtpButtonDisabled] = useState(false);
+  const [timer, setTimer] = useState(0);
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(countdown);
+    } else if (timer === 0) {
+      setIsOtpButtonDisabled(false);
+    }
+  }, [timer]);
   return (
     <>
       <UserNavigation handleOpenLoginDialog={handleOpenLoginDialog} />
@@ -645,7 +661,7 @@ const Profile = ({
                   </div>
 
                   <Button
-                    onClick={verifyingRegisterOtp}
+                    onClick={sendingRegisterOtp}
                     variant="gradient"
                     fullWidth
                     size="lg"
@@ -663,7 +679,7 @@ const Profile = ({
       <Dialog
         open={open4}
         handler={handleOpen4}
-        size="xs"
+        size="sm"
         dismiss={{ enabled: false }}
         animate={{
           mount: { scale: 1, y: 0 },
@@ -672,7 +688,7 @@ const Profile = ({
       >
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-2xl font-bold mb-4 text-center text-blue-500">
-            Verify OTP
+            Verify Number
           </h2>
           <form onSubmit={handleRegister} className="flex flex-col gap-4">
             <Input
@@ -687,17 +703,24 @@ const Profile = ({
             <p className="text-gray-600 flex gap-1 text-xs items-center">
               <FaInfoCircle />{" "}
               <span>
-                Please enter the 4-digit OTP sent to your mobile number{" "}
+                Please enter the 4 digit OTP sent to your mobile number{" "}
                 {registerData.phoneNumber}.
               </span>
             </p>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-400 text-white p-3 rounded hover:bg-blue-600 transition duration-200"
-            >
-              Verify OTP
-            </button>
+            <div className="flex gap-4 items-center">
+              <Button
+                variant="text"
+                color="blue-gray"
+                className="underline w-full"
+                onClick={sendingRegisterOtp}
+                disabled={isOtpButtonDisabled}
+              >
+                {isOtpButtonDisabled ? `Resend OTP in ${timer} s` : "Send OTP"}
+              </Button>
+              <Button type="submit" variant="gradient" color="blue" fullWidth>
+                Verify OTP
+              </Button>
+            </div>
           </form>
         </div>
       </Dialog>

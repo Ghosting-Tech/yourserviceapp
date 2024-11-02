@@ -4,8 +4,10 @@ import { Suspense, lazy, useState, useEffect } from "react";
 import Loading from "@/components/Loading";
 import ShowServices from "@/components/home/ShowServices";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setGeolocationDenied } from "@/redux/slice/locationSlice";
+import Testimonial from "@/components/home/testimonial/Testimonial";
+import Blogs from "@/components/BlogSection";
 
 // Dynamically import components
 const Hero = dynamic(() => import("@/components/home/Hero"), { ssr: false });
@@ -60,17 +62,12 @@ const getAddress = async ({ lat, lng }) => {
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [topServices, setTopServices] = useState([]);
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedState, setSelectedState] = useState("Bihar");
+  const [selectedCity, setSelectedCity] = useState("patna");
 
   const dispatch = useDispatch();
-  const geolocationDenied = useSelector(
-    (state) => state.location.geolocationDenied
-  );
 
   const getTopServices = async (cityState) => {
-    console.log("In top service");
-    setLoading(true);
     try {
       const response = await fetchTopServices(cityState);
       const services = response.data;
@@ -115,12 +112,9 @@ export default function Home() {
     };
 
     const storedLocation = localStorage.getItem("cityState");
-    console.log({ storedLocation });
     if (storedLocation) {
-      console.log("In cityState");
       getTopServices(JSON.parse(storedLocation));
     } else {
-      console.log("In getUserLocation");
       getUserLocation();
     }
   }, [dispatch, setLoading]);
@@ -132,11 +126,6 @@ export default function Home() {
       getTopServices(cityState);
     }
   };
-
-  // Ensure loading state is set to false if data is successfully fetched
-  useEffect(() => {
-    setLoading(false);
-  }, []);
 
   if (loading) return <Loading />;
 
@@ -156,6 +145,8 @@ export default function Home() {
         <VideoCarousel />
         <ServiceSection />
         <CallToAction />
+        <Testimonial />
+        <Blogs />
       </Suspense>
     </main>
   );

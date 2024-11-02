@@ -76,29 +76,13 @@ export default function NavList() {
     }
     setSearchedData(result);
   }
-  const [address, setAddress] = useState("");
-  const getAddress = async ({ lat, lng }) => {
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-      );
-      const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        setAddress(data.results[0].address_components[1].short_name);
-        // console.log(data.results[0].address_components);
-      } else {
-        setAddress("Address not found");
-        console.log("Address not found");
-      }
-    } catch (error) {
-      console.error("Error fetching address:", error);
-      setAddress("Error fetching address");
-    }
-  };
+  const [location, setLocation] = useState("Location");
+
   useEffect(() => {
-    const location = JSON.parse(localStorage.getItem("location"));
-    if (location) {
-      getAddress(location);
+    // Access localStorage only on the client side
+    const cityState = JSON.parse(localStorage.getItem("cityState"));
+    if (cityState?.city) {
+      setLocation(cityState.city);
     }
   }, []);
   return (
@@ -106,11 +90,10 @@ export default function NavList() {
       <ServicesList />
       <div className="flex gap-2 justify-evenly">
         <Link
-          href={"/location"}
-          variant="gradient"
+          href="/location"
           className="flex gap-2 w-full border bg-white border-gray-300 hover:bg-gray-200 shadow py-2 px-4 rounded-md justify-center items-center"
         >
-          {address ? address : "Location"}
+          {location}
           <FaLocationDot size={18} color="#F44336" />
         </Link>
 
