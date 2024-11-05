@@ -4,6 +4,13 @@ import { useParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { VscLoading } from "react-icons/vsc";
 import {
+  Card,
+  CardHeader,
+  CardBody,
+  Typography,
+  Dialog,
+} from "@material-tailwind/react";
+import {
   Button,
   ListItem,
   ListItemSuffix,
@@ -30,6 +37,12 @@ const ServiceProviderDetailsPage = () => {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+  };
+  const [open, setOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const handleOpen = (image) => {
+    setSelectedImage(image);
+    setOpen(true);
   };
   const [serviceProvider, setServiceProvider] = useState({});
   const [loading, setLoading] = useState(true);
@@ -239,11 +252,85 @@ const ServiceProviderDetailsPage = () => {
             <ListItemSuffix>{serviceProvider.city}</ListItemSuffix>
           </ListItem>
           <ListItem>
+            State
+            <ListItemSuffix>{serviceProvider.state}</ListItemSuffix>
+          </ListItem>
+          <ListItem>
             Account Created at
             <ListItemSuffix>
               {formatDate(serviceProvider.createdAt)}
             </ListItemSuffix>
           </ListItem>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="cursor-pointer border shadow-none">
+              <CardHeader
+                floated={false}
+                className="relative h-48 shadow-none"
+                onClick={() => handleOpen(serviceProvider?.id1?.image?.url)}
+              >
+                <img
+                  src={serviceProvider?.id1?.image?.url}
+                  className="h-full w-full object-cover"
+                />
+              </CardHeader>
+              <CardBody>
+                <Typography variant="p" color="blue-gray">
+                  {serviceProvider?.id1?.name}
+                </Typography>
+              </CardBody>
+            </Card>
+            <Card className="cursor-pointer border shadow-none">
+              <CardHeader
+                floated={false}
+                className="relative h-48 shadow-none"
+                onClick={() => handleOpen(serviceProvider?.id2?.image?.url)}
+              >
+                <img
+                  src={serviceProvider?.id2?.image?.url}
+                  className="h-full w-full object-cover"
+                />
+              </CardHeader>
+              <CardBody>
+                <Typography variant="p" color="blue-gray">
+                  {serviceProvider?.id2?.name}{" "}
+                </Typography>
+              </CardBody>
+            </Card>
+          </div>
+
+          <Dialog
+            size="xl"
+            open={open}
+            handler={() => setOpen(false)}
+            className="bg-transparent shadow-none"
+          >
+            <div className="relative h-[90vh] w-full">
+              <img
+                src={selectedImage}
+                alt="Full size preview"
+                className="h-full w-full object-contain rounded-lg"
+              />
+              <button
+                onClick={() => setOpen(false)}
+                className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-800"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </Dialog>
         </div>
       </div>
       <div className="flex min-h-full flex-col justify-center items-center">
