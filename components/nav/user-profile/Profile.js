@@ -193,8 +193,9 @@ const Profile = ({
         return;
       }
       const { data } = await axios.post(`/api/users/register`, registerData);
-      if (!data.success) {
+      if (data.success === false) {
         toast.error(data.message);
+        return;
       }
       const loginResponse = await fetch(
         "/api/users/login",

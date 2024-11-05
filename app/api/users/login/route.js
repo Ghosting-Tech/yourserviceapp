@@ -23,7 +23,7 @@ export async function POST(request) {
       // Delay the response slightly to make brute force attacks harder
       await new Promise((resolve) => setTimeout(resolve, 500));
       return NextResponse.json(
-        { message: "Invalid credentials", status: 400 },
+        { success: false, message: "Invalid credentials", status: 400 },
         { status: 400 }
       );
     }
@@ -36,7 +36,7 @@ export async function POST(request) {
       // Delay the response slightly to make brute force attacks harder
       await new Promise((resolve) => setTimeout(resolve, 500));
       return NextResponse.json(
-        { message: "Invalid credentials", status: 400 },
+        { success: false, message: "Invalid credentials", status: 400 },
         { status: 400 }
       );
     }
@@ -44,7 +44,7 @@ export async function POST(request) {
     // Check if the user account is active
     if (!user.active) {
       return NextResponse.json(
-        { message: "Account is not active", status: 403 },
+        { success: false, message: "Account is not active", status: 403 },
         { status: 403 }
       );
     }
@@ -67,7 +67,7 @@ export async function POST(request) {
 
     // Set the token as an HTTP-only cookie, accessible on client and server side
     const response = NextResponse.json(
-      { message: "Login successful", user },
+      { success: true, message: "Login successful", user },
       { status: 200 }
     );
     // Set cookie options (HttpOnly, Secure in production)
@@ -83,7 +83,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { message: "Something went wrong", status: 500 },
+      { success: false, message: "Something went wrong", status: 500 },
       { status: 500 }
     );
   }

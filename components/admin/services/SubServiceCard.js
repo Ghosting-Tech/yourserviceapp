@@ -13,6 +13,7 @@ import {
   ListItemSuffix,
   Option,
   Select,
+  Textarea,
   Typography,
 } from "@material-tailwind/react";
 import {
@@ -169,6 +170,11 @@ const SubServiceCard = ({
             {subService.name}
           </Typography>
         </div>
+        <p className="text-gray-500 truncate">
+          {subService?.description?.length > 50
+            ? `${subService.description.substring(0, 47)}...`
+            : subService?.description}
+        </p>
         <div className="text-2xl font-bold text-teal-500">
           ₹{subService.price}
         </div>
@@ -234,6 +240,7 @@ const SubServiceCard = ({
               <h1 className="font-bold text-5xl text-gray-700">
                 {subService.name}
               </h1>
+              <p className="text-gray-500">{subService?.description}</p>
               <p className="text-xl text-teal-500 font-semibold">
                 ₹{subService.price}
               </p>
@@ -311,6 +318,18 @@ const SubServiceCard = ({
                   value={subService.price}
                   onChange={(e) =>
                     setSubService({ ...subService, price: e.target.value })
+                  }
+                />
+                <Textarea
+                  className="bg-white"
+                  color="indigo"
+                  label="Description"
+                  value={subService.description}
+                  onChange={(e) =>
+                    setSubService({
+                      ...subService,
+                      description: e.target.value,
+                    })
                   }
                 />
                 <Select
