@@ -1,6 +1,7 @@
 import { isLoggedIn } from "@/libs/isLoggedIn";
 import connectMongoDB from "@/libs/mongodb";
 import Service from "@/models/service-model";
+import SubService from "@/models/subService"; // Make sure this is the model for subservices
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -25,35 +26,15 @@ export async function POST(request) {
       matchQuery = { status: "active", cities: data.city };
     }
 
-    // Use aggregation pipeline to match and conditionally filter sub-services
-    const services = await Service.aggregate([
-      { $match: matchQuery },
-      { $sort: { createdAt: -1 } },
-      { $limit: limit },
-      {
-        $lookup: {
-          from: "subservices", // the name of the sub-services collection
-          localField: "subServices",
-          foreignField: "_id",
-          as: "subServices",
-        },
-      },
-      ...(user?.user?.role !== "admin"
-        ? [
-            {
-              $set: {
-                subServices: {
-                  $filter: {
-                    input: "$subServices",
-                    as: "subService",
-                    cond: { $eq: ["$$subService.status", "active"] },
-                  },
-                },
-              },
-            },
-          ]
-        : []),
-    ]);
+    // Fetch the services with a standard `find` query
+    const services = await Service.find(matchQuery)
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate({
+        path: "subServices",
+        match: user?.user?.role !== "admin" ? { status: "active" } : {}, // Filters subservices only if user is not admin
+      })
+      .lean();
 
     return NextResponse.json(services, { status: 200 });
   } catch (error) {

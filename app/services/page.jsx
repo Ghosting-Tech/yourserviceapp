@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ShowServices from "@/components/home/ShowServices";
-import axios from "axios";
+import axios, { all } from "axios";
 import { useDispatch } from "react-redux";
 import { setGeolocationDenied } from "@/redux/slice/locationSlice";
 import Loading from "@/components/Loading";
+import { toast } from "sonner";
 
 const fetchServices = async (cityState) => {
   try {
@@ -50,11 +51,14 @@ const AllServices = () => {
 
   const dispatch = useDispatch();
 
-  const getServices = async (cityState) => {
+  const getServices = async (cityState, message) => {
     try {
       const response = await fetchServices(cityState);
-      const services = response.data;
-      setServices(services);
+      const allServices = response.data;
+      if (message && allServices.length === 0) {
+        toast.warning(message);
+      }
+      setServices(allServices);
       dispatch(setGeolocationDenied(false));
     } catch (error) {
       console.error("Error fetching top services:", error);
@@ -106,7 +110,10 @@ const AllServices = () => {
     if (selectedState && selectedCity) {
       const cityState = { state: selectedState, city: selectedCity };
       localStorage.setItem("cityState", JSON.stringify(cityState));
-      getServices(cityState);
+      getServices(
+        cityState,
+        "No services found for the selected location. Please select a different location."
+      );
     }
   };
   return (

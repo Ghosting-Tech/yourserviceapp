@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setGeolocationDenied } from "@/redux/slice/locationSlice";
 import Testimonial from "@/components/home/testimonial/Testimonial";
 import Blogs from "@/components/BlogSection";
+import { toast } from "sonner";
 
 // Dynamically import components
 const Hero = dynamic(() => import("@/components/home/Hero"), { ssr: false });
@@ -29,6 +30,7 @@ const fetchTopServices = async (cityState) => {
       "/api/services/top-booked?limit=10",
       cityState
     );
+    console.log("Top services response:", response.data);
     return response;
   } catch (error) {
     console.error("Error fetching top services:", error);
@@ -67,11 +69,14 @@ export default function Home() {
 
   const dispatch = useDispatch();
 
-  const getTopServices = async (cityState) => {
+  const getTopServices = async (cityState, message) => {
     try {
       const response = await fetchTopServices(cityState);
-      const services = response.data;
-      setTopServices(services);
+      const allServices = response.data;
+      if (message && allServices.length === 0) {
+        toast.warning(message);
+      }
+      setTopServices(allServices);
       dispatch(setGeolocationDenied(false));
     } catch (error) {
       console.error("Error fetching top services:", error);
@@ -123,7 +128,10 @@ export default function Home() {
     if (selectedState && selectedCity) {
       const cityState = { state: selectedState, city: selectedCity };
       localStorage.setItem("cityState", JSON.stringify(cityState));
-      getTopServices(cityState);
+      getTopServices(
+        cityState,
+        "No services found for the selected location. Please select a different location."
+      );
     }
   };
 
