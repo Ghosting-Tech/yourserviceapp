@@ -20,7 +20,6 @@ import location from "../../../state&city/location.json";
 import VerifyOtp from "@/components/become-service-provider/dialog/VerifyOtp";
 import sendSmsMessage from "@/utils/sendSmsMessage";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { IoAlert } from "react-icons/io5";
 import { GoAlertFill } from "react-icons/go";
 const CreateServiceProvider = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -115,14 +114,6 @@ const CreateServiceProvider = () => {
         },
       }));
     }
-  };
-
-  const handleCityChange = (e) => {
-    const city = e;
-    setInputData((prevData) => ({
-      ...prevData,
-      city: city,
-    }));
   };
   const validateInputs = () => {
     console.log({ data: inputData });

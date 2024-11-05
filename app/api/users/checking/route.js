@@ -5,7 +5,14 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   const { phoneNumber, email } = await request.json();
   await connectMongoDB();
-  
+
+  if (!phoneNumber || !email) {
+    return NextResponse.json({
+      success: false,
+      message: "Phone Number and Email are required",
+    });
+  }
+
   const phoneExist = await User.findOne({ phoneNumber });
   if (phoneExist) {
     return NextResponse.json({

@@ -192,7 +192,10 @@ const Profile = ({
         toast.error("Invalid OTP");
         return;
       }
-      await axios.post(`/api/users/register`, registerData);
+      const { data } = await axios.post(`/api/users/register`, registerData);
+      if (!data.success) {
+        toast.error(data.message);
+      }
       const loginResponse = await fetch(
         "/api/users/login",
         {
@@ -207,10 +210,10 @@ const Profile = ({
         },
         { cache: "no-store" }
       );
-      const data = await loginResponse.json();
+      const loginData = await loginResponse.json();
 
       if (loginResponse.status == 200) {
-        dispatch(setUser(data.user));
+        dispatch(setUser(loginData.user));
         setOpen4(false);
         setOpenLoginDialog(false);
         setOtp("");
@@ -221,7 +224,7 @@ const Profile = ({
           password: "",
         });
       } else {
-        toast.error(data.message);
+        toast.error(loginData.message);
       }
     } catch (err) {
       toast.error(`Something went wrong while Registering`);
