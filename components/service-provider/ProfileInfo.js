@@ -8,7 +8,6 @@ import {
 } from "@material-tailwind/react";
 
 const ProfileInfo = ({ user }) => {
-  console.log({ user: user });
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     const date = new Date(dateString);
@@ -57,16 +56,16 @@ const ProfileInfo = ({ user }) => {
           <CardHeader
             floated={false}
             className="relative h-48"
-            onClick={() => handleOpen(user?.id1.image.url)}
+            onClick={() => handleOpen(user?.id1?.image?.url)}
           >
             <img
-              src={user?.id1.image.url}
+              src={user?.id1?.image?.url}
               className="h-full w-full object-cover"
             />
           </CardHeader>
           <CardBody>
             <Typography variant="p" color="blue-gray">
-              {user.id1.name}
+              {user?.id1?.name}
             </Typography>
           </CardBody>
         </Card>
@@ -74,16 +73,16 @@ const ProfileInfo = ({ user }) => {
           <CardHeader
             floated={false}
             className="relative h-48"
-            onClick={() => handleOpen(user?.id2.image.url)}
+            onClick={() => handleOpen(user?.id2?.image?.url)}
           >
             <img
-              src={user?.id2.image.url}
+              src={user?.id2?.image?.url}
               className="h-full w-full object-cover"
             />
           </CardHeader>
           <CardBody>
             <Typography variant="p" color="blue-gray">
-              {user?.id2.name}{" "}
+              {user?.id2?.name}{" "}
             </Typography>
           </CardBody>
         </Card>

@@ -132,8 +132,8 @@ const CreateServiceProvider = () => {
       isValid = false;
       return;
     }
-    if (inputData.image.size >= 1000000) {
-      toast.error("Please upload the profile image less than 1Mb");
+    if (inputData.image.size >= 2000000) {
+      toast.error("Please upload the profile image less than 2Mb");
       isValid = false;
       return;
     }
@@ -157,13 +157,13 @@ const CreateServiceProvider = () => {
       isValid = false;
       return;
     }
-    if (inputData.id1.image.file.size >= 1000000) {
-      toast.error("Please upload the first id  image less than 1Mb");
+    if (inputData.id1.image.file.size >= 2000000) {
+      toast.error("Please upload the first id  image less than 2Mb");
       isValid = false;
       return;
     }
-    if (inputData.id2.image.file.size >= 1000000) {
-      toast.error("Please upload the second id image less than 1Mb");
+    if (inputData.id2.image.file.size >= 2000000) {
+      toast.error("Please upload the second id image less than 2Mb");
       isValid = false;
       return;
     }
@@ -556,7 +556,7 @@ const CreateServiceProvider = () => {
                       type="file"
                       id="icon"
                       onChange={handleid2Upload}
-                      accept=".jpeg, .jpg, .png, .pdf,"
+                      accept=".jpeg, .jpg, .png"
                     />
                   </div>
                 </div>
