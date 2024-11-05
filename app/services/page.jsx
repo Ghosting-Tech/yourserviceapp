@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ShowServices from "@/components/home/ShowServices";
 import axios, { all } from "axios";
 import { useDispatch } from "react-redux";
@@ -47,25 +47,31 @@ const AllServices = () => {
 
   const [services, setServices] = useState([]);
   const [selectedState, setSelectedState] = useState("Bihar");
-  const [selectedCity, setSelectedCity] = useState("patna");
+  const [selectedCity, setCity] = useState("patna");
+
+  const setSelectedCity = useCallback((city) => {
+    setCity(city);
+  }, []);
 
   const dispatch = useDispatch();
-
-  const getServices = async (cityState, message) => {
-    try {
-      const response = await fetchServices(cityState);
-      const allServices = response.data;
-      if (message && allServices.length === 0) {
-        toast.warning(message);
+  const getServices = useCallback(
+    async (cityState, message) => {
+      try {
+        const response = await fetchServices(cityState);
+        const allServices = response.data;
+        if (message && allServices.length === 0) {
+          toast.warning(message);
+        }
+        setServices(allServices);
+        dispatch(setGeolocationDenied(false));
+      } catch (error) {
+        console.error("Error fetching top services:", error);
+      } finally {
+        setLoading(false);
       }
-      setServices(allServices);
-      dispatch(setGeolocationDenied(false));
-    } catch (error) {
-      console.error("Error fetching top services:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [dispatch, setServices]
+  );
 
   useEffect(() => {
     const getUserLocation = () => {
@@ -104,7 +110,7 @@ const AllServices = () => {
     } else {
       getUserLocation();
     }
-  }, [dispatch, setLoading]);
+  }, [dispatch, setLoading, getServices, setSelectedCity]);
 
   const handleLocationChange = () => {
     if (selectedState && selectedCity) {

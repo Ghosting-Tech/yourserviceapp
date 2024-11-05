@@ -33,7 +33,7 @@ const EditProfileDialog = ({ open, handleOpen, user, setUser }) => {
     } else {
       setCities([]);
     }
-  }, [selectedState, location]);
+  }, [selectedState]);
 
   // Ensure the city list is updated if the component initially loads with a selected state
   useEffect(() => {
@@ -41,7 +41,7 @@ const EditProfileDialog = ({ open, handleOpen, user, setUser }) => {
       setSelectedState(updateUser.state);
       setCities(location[updateUser.state] || []);
     }
-  }, [updateUser.state, location]);
+  }, [updateUser.state]);
 
   const [emailError, setEmailError] = useState("");
 

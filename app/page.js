@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { Suspense, lazy, useState, useEffect } from "react";
+import { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import Loading from "@/components/Loading";
 import ShowServices from "@/components/home/ShowServices";
 import axios from "axios";
@@ -65,25 +65,32 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [topServices, setTopServices] = useState([]);
   const [selectedState, setSelectedState] = useState("Bihar");
-  const [selectedCity, setSelectedCity] = useState("patna");
+  const [selectedCity, setCity] = useState("patna");
+
+  const setSelectedCity = useCallback((city) => {
+    setCity(city);
+  }, []);
 
   const dispatch = useDispatch();
 
-  const getTopServices = async (cityState, message) => {
-    try {
-      const response = await fetchTopServices(cityState);
-      const allServices = response.data;
-      if (message && allServices.length === 0) {
-        toast.warning(message);
+  const getTopServices = useCallback(
+    async (cityState, message) => {
+      try {
+        const response = await fetchTopServices(cityState);
+        const allServices = response.data;
+        if (message && allServices.length === 0) {
+          toast.warning(message);
+        }
+        setTopServices(allServices);
+        dispatch(setGeolocationDenied(false));
+      } catch (error) {
+        console.error("Error fetching top services:", error);
+      } finally {
+        setLoading(false);
       }
-      setTopServices(allServices);
-      dispatch(setGeolocationDenied(false));
-    } catch (error) {
-      console.error("Error fetching top services:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [dispatch, setTopServices]
+  );
 
   useEffect(() => {
     const getUserLocation = () => {
@@ -122,7 +129,7 @@ export default function Home() {
     } else {
       getUserLocation();
     }
-  }, [dispatch, setLoading]);
+  }, [dispatch, setLoading, getTopServices, setSelectedCity]);
 
   const handleLocationChange = () => {
     if (selectedState && selectedCity) {

@@ -6,6 +6,7 @@ import {
   Typography,
   Dialog,
 } from "@material-tailwind/react";
+import Image from "next/image";
 
 const ProfileInfo = ({ user }) => {
   const formatDate = (dateString) => {
@@ -58,7 +59,10 @@ const ProfileInfo = ({ user }) => {
             className="relative h-48"
             onClick={() => handleOpen(user?.id1?.image?.url)}
           >
-            <img
+            <Image
+              width={1000}
+              height={1000}
+              alt="profile"
               src={user?.id1?.image?.url}
               className="h-full w-full object-cover"
             />
@@ -75,7 +79,10 @@ const ProfileInfo = ({ user }) => {
             className="relative h-48"
             onClick={() => handleOpen(user?.id2?.image?.url)}
           >
-            <img
+            <Image
+              width={1000}
+              height={1000}
+              alt="service provider Id-2"
               src={user?.id2?.image?.url}
               className="h-full w-full object-cover"
             />
@@ -95,7 +102,9 @@ const ProfileInfo = ({ user }) => {
         className="bg-transparent shadow-none"
       >
         <div className="relative h-[90vh] w-full">
-          <img
+          <Image
+            width={1000}
+            height={1000}
             src={selectedImage}
             alt="Full size preview"
             className="h-full w-full object-contain rounded-lg"

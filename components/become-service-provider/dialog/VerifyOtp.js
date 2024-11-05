@@ -31,6 +31,7 @@ const VerifyOtp = ({
     } else if (timer === 0) {
       setIsOtpButtonDisabled(false);
     }
+    //eslint-disable-next-line
   }, [timer]);
   const handleChange = (e) => {
     setOtp(e.target.value);
