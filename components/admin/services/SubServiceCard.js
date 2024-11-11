@@ -1,21 +1,10 @@
 "use client";
+
+import React, { useState } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import { storage } from "@/firebase";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Dialog,
-  DialogFooter,
-  Input,
-  ListItem,
-  ListItemSuffix,
-  Option,
-  Select,
-  Textarea,
-  Typography,
-} from "@material-tailwind/react";
 import {
   ref,
   uploadBytes,
@@ -23,26 +12,44 @@ import {
   deleteObject,
   getMetadata,
 } from "firebase/storage";
-import Image from "next/image";
-import React, { useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Input,
+  Option,
+  Select,
+  Textarea,
+  IconButton,
+} from "@material-tailwind/react";
 import { IoMdOpen } from "react-icons/io";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import { IoBagRemove } from "react-icons/io5";
+import { FaCartArrowDown } from "react-icons/fa";
 import { TiArrowRepeat } from "react-icons/ti";
-import { toast } from "sonner";
+import Link from "next/link";
+import { ArrowDownCircleIcon } from "@heroicons/react/24/outline";
+import { FaArrowRightLong } from "react-icons/fa6";
 
-const SubServiceCard = ({
+export default function SubServiceCard({
+  forAdmin,
+  cartItems,
+  removingCartItem,
+  handleAddingCart,
   sub,
   index,
-  serviceId,
   subServices,
   fetchingInitialData,
-}) => {
+}) {
   const [subService, setSubService] = useState(sub);
-  const [open2, setOpen2] = useState(false);
-  const handleOpen2 = () => setOpen2(!open2);
-  const [openEditDailog, setOpenEditDailog] = useState(false);
-  const handleAlterEditDailog = () => setOpenEditDailog(!openEditDailog);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const handleViewDialog = () => setViewDialogOpen(!viewDialogOpen);
+  const handleEditDialog = () => setEditDialogOpen(!editDialogOpen);
 
   const deleteSubService = async () => {
     try {
@@ -57,23 +64,20 @@ const SubServiceCard = ({
 
       const imageRef = ref(storage, subService.icon.name);
 
-      // Check if the image exists before deleting
       try {
-        await getMetadata(imageRef); // If this fails, the object does not exist
-        await deleteObject(imageRef); // Delete the object only if it exists
+        await getMetadata(imageRef);
+        await deleteObject(imageRef);
       } catch (err) {
         if (err.code === "storage/object-not-found") {
           console.log("Image not found, skipping deletion");
         } else {
-          throw err; // Re-throw if it's a different error
+          throw err;
         }
       }
 
       const res = await fetch(`/api/sub-services`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: subService._id }),
       });
       const data = await res.json();
@@ -85,7 +89,7 @@ const SubServiceCard = ({
         toast.error(data.message);
       }
     } catch (error) {
-      console.log("Error deleting sub-service:", error);
+      console.error("Error deleting sub-service:", error);
       toast.error("Failed to delete sub-service");
     }
   };
@@ -96,212 +100,307 @@ const SubServiceCard = ({
       try {
         await deleteObject(ref(storage, subService.icon.name));
       } catch (error) {
-        console.log("Error deleting previous image:", error);
+        console.error("Error deleting previous image:", error);
       }
       const iconRef = ref(
         storage,
-        `subServiceIcons/${image.lastModified + image.size + image.name}`
+        `subServiceIcons/${Date.now()}-${image.name}`
       );
       await uploadBytes(iconRef, image);
-      const iconUrl = await getDownloadURL(iconRef); // Get the image URL directly
-      const iconObject = { url: iconUrl, name: iconRef._location.path_ };
-      const postData = { ...subService, icon: iconObject };
-      setSubService(postData);
-      const res = await fetch(`/api/sub-services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      });
-      const data = await res.json();
-      if (data.error) {
-        alert(data.error);
-      } else {
-        setOpen2(false);
-      }
+      const iconUrl = await getDownloadURL(iconRef);
+      const iconObject = { url: iconUrl, name: iconRef.fullPath };
+      const updatedSubService = { ...subService, icon: iconObject };
+      setSubService(updatedSubService);
+      await updateSubService(updatedSubService);
+      setViewDialogOpen(false);
     } catch (error) {
-      console.log(error);
+      console.error("Error replacing icon:", error);
+      toast.error("Failed to replace icon");
     }
   };
-  const handleUpdateSubServiceDetails = async () => {
+
+  const updateSubService = async (updatedSubService) => {
     try {
       const res = await fetch(`/api/sub-services`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(subService),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedSubService),
       });
       const data = await res.json();
-      setOpenEditDailog(false);
       if (data.error) {
         toast.error(data.error);
+      } else {
+        toast.success("Sub service updated successfully");
+        setEditDialogOpen(false);
+        fetchingInitialData();
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error updating sub-service:", error);
+      toast.error("Failed to update sub-service");
     }
   };
+
   return (
-    <Card className="w-full max-w-72" key={index}>
-      <Image
-        width={1000}
-        height={1000}
-        src={subService?.icon?.url}
-        alt="Service Icon"
-        className="object-cover aspect-square"
-      />
-      <CardBody>
-        <div className="mb-1 flex flex-col justify-start gap-2">
-          <div>
-            <span
-              className={`border ${
-                subService.status === "active" ? "bg-teal-100" : "bg-red-100"
-              }  text-xs ${
-                subService.status === "active"
-                  ? "text-teal-700"
-                  : "text-red-700"
-              }  px-2 py-1 rounded-full`}
-            >
-              {subService.status}
-            </span>
-          </div>
-          <Typography variant="h4" color="blue-gray" className="font-medium">
-            {subService.name}
-          </Typography>
-        </div>
-        <p className="text-gray-500 truncate">
-          {subService?.description?.length > 50
-            ? `${subService.description.substring(0, 47)}...`
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      key={index}
+      className="group hover:scale-110 transition-all relative bg-white dark:bg-gray-800 rounded-2xl w-72 shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700"
+    >
+      <div className="relative h-48 overflow-hidden bg-white">
+        <Image
+          src={subService.icon.url}
+          alt={subService.name}
+          layout="fill"
+          objectFit="cover"
+          className="transition-all duration-300 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-2"
+        />
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className={`absolute top-4 left-4 px-2 py-1 rounded-full text-xs font-medium ${
+            subService.status === "active"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {subService.status}
+        </motion.div>
+      </div>
+
+      <div className="p-6 space-y-1">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 truncate">
+          {subService.name}
+        </h3>
+        <div className="text-gray-500 truncate text-sm">
+          {subService?.description?.length > 100
+            ? `${subService.description.substring(0, 97)}...`
             : subService?.description}
-        </p>
-        <div className="text-2xl font-bold text-teal-500">
+          {!subService?.description && (
+            <span className="text-gray-500" onClick={() => handleViewDialog()}>
+              ...
+            </span>
+          )}
+        </div>
+        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
           ₹{subService.price}
         </div>
-      </CardBody>
-      <CardFooter className="pt-0 flex flex-col gap-2">
-        <Button
-          size="lg"
-          fullWidth={true}
-          onClick={handleOpen2}
-          variant="gradient"
-          color="indigo"
-          className="flex gap-1 items-center justify-center"
-        >
-          View <IoMdOpen size={20} />
-        </Button>
-        <Dialog
-          size="md"
-          className="bg-gray-200"
-          open={open2}
-          handler={handleOpen2}
-          animate={{
-            mount: { scale: 1, y: 0 },
-            unmount: { scale: 0.9, y: -100 },
-          }}
-        >
-          <div className="flex justify-between items-center px-6 py-4">
-            <h1 className="text-3xl font-bold text-indigo-500 font-lato text-center">
-              Sub Service
-            </h1>
-            <button
-              onClick={handleOpen2}
-              title="Close"
-              className="hover:scale-125 transition-all duration-500 ease-in-out"
+        {forAdmin ? (
+          <div className="flex space-x-2 pt-2">
+            <Button
+              onClick={deleteSubService}
+              variant="text"
+              color="red"
+              className="flex-1 flex items-center justify-center gap-2"
             >
-              <RxCross2 size={25} />
-            </button>
-          </div>
-
-          <div className="flex gap-4 px-6">
-            <Image
-              width={100}
-              height={100}
-              src={subService.icon?.url}
-              alt=""
-              className="w-32 h-full rounded-md object-cover drop-shadow-lg aspect-square"
-            />
-            <div className="flex flex-col gap-2 justify-center">
-              <div>
-                <span
-                  className={`border ${
-                    subService.status === "active"
-                      ? "bg-teal-100"
-                      : "bg-red-100"
-                  }  text-xs ${
-                    subService.status === "active"
-                      ? "text-teal-700"
-                      : "text-red-700"
-                  }  px-2 py-1 rounded-full`}
-                >
-                  {subService.status}
-                </span>
-              </div>
-              <h1 className="font-bold text-5xl text-gray-700">
-                {subService.name}
-              </h1>
-              <p className="text-gray-500">{subService?.description}</p>
-              <p className="text-xl text-teal-500 font-semibold">
-                ₹{subService.price}
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <label
-              htmlFor="icon"
-              className="flex items-center gap-1 mr-1 h-full px-2 py-1 bg-gray-700 text-white rounded-md cursor-pointer"
-            >
-              Replace Icon <TiArrowRepeat size={18} />
-              <input
-                type="file"
-                className="hidden"
-                id="icon"
-                onChange={(e) => handleReplaceIcon(e.target.files[0])}
-              />
-            </label>
-            <Button variant="gradient" color="red" className="mr-1">
-              <span
-                className="flex items-center gap-1"
-                onClick={deleteSubService}
-              >
-                Delete <MdDelete />
-              </span>
+              <MdDelete className="h-4 w-4" />
+              Delete
             </Button>
             <Button
+              onClick={handleViewDialog}
               variant="gradient"
-              color="indigo"
-              onClick={handleAlterEditDailog}
+              color="blue"
+              className="flex-1 flex items-center justify-center gap-2"
             >
-              <span className="flex items-center gap-1">
-                Edit <MdEdit />
-              </span>
+              <IoMdOpen className="h-4 w-4" />
+              View
             </Button>
-            <Dialog
-              size="sm"
-              className="bg-gray-200"
-              open={openEditDailog}
-              handler={handleAlterEditDailog}
-              animate={{
-                mount: { scale: 1, y: 0, x: 0 },
-                unmount: { scale: 0, y: 200, x: 400 },
-              }}
+          </div>
+        ) : (
+          <div className="pt-0 flex gap-4 w-full">
+            <IconButton
+              onClick={handleViewDialog}
+              variant="text"
+              fullWidth
+              color="blue"
+              className="flex-1 flex items-center justify-center gap-2"
             >
-              <div className="flex justify-between items-center px-6 py-4">
-                <h1 className="text-3xl font-bold text-indigo-500 font-lato text-center">
-                  Edit Sub Service
-                </h1>
-                <button
-                  onClick={handleAlterEditDailog}
-                  title="Close"
-                  className="hover:scale-125 transition-all duration-500 ease-in-out"
-                >
-                  <RxCross2 size={25} />
-                </button>
+              <IoMdOpen className="h-4 w-4" />
+            </IconButton>
+            {cartItems.some((sub) => sub._id === subService._id) ? (
+              <Button
+                size="sm"
+                variant="gradient"
+                color="red"
+                className="flex gap-2 items-center justify-center"
+                onClick={() => removingCartItem(subService._id)}
+              >
+                <span>Remove Service</span>
+                <IoBagRemove size={20} />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="gradient"
+                color="blue"
+                className="flex gap-2 items-center justify-center"
+                onClick={() => handleAddingCart(subService)}
+              >
+                <span>Select service</span>
+                <FaCartArrowDown size={20} />
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {viewDialogOpen && (
+          <Dialog
+            size="lg"
+            open={viewDialogOpen}
+            handler={handleViewDialog}
+            animate={{
+              mount: { scale: 1, y: 0 },
+              unmount: { scale: 0.9, y: -100 },
+            }}
+            className="bg-white dark:bg-gray-800"
+          >
+            <DialogHeader className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
+              <h3 className="text-2xl font-bold text-blue-600 dark:text-gray-100">
+                Sub Service Details
+              </h3>
+              <Button
+                variant="text"
+                color="blue-gray"
+                onClick={handleViewDialog}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <RxCross2 size={24} />
+              </Button>
+            </DialogHeader>
+            <DialogBody className="p-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="w-full md:w-1/3">
+                  <div className="relative aspect-square rounded-lg overflow-hidden shadow-lg">
+                    <Image
+                      src={subService.icon.url}
+                      alt={subService.name}
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-transform duration-300 hover:scale-110"
+                    />
+                  </div>
+                  {forAdmin && (
+                    <div className="mt-4 flex justify-center">
+                      <label className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full cursor-pointer hover:bg-blue-100 transition-colors flex items-center gap-2">
+                        <TiArrowRepeat size={20} />
+                        Replace Icon
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={(e) =>
+                            e.target.files &&
+                            handleReplaceIcon(e.target.files[0])
+                          }
+                        />
+                      </label>
+                    </div>
+                  )}
+                </div>
+                <div className="w-full md:w-2/3 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                      {subService.name}
+                    </h4>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        subService.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {subService.status}
+                    </span>
+                  </div>
+                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    ₹{subService.price}
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300 text-md leading-relaxed">
+                    {subService.description}
+                  </p>
+                  {cartItems.some((sub) => sub._id === subService._id) ? (
+                    <Link href={"/cart"}>
+                      <Button
+                        size="sm"
+                        variant="outlined"
+                        color="blue"
+                        className="flex gap-2 items-center justify-center"
+                      >
+                        <span>Next</span>
+                        <FaArrowRightLong />
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="gradient"
+                      color="blue"
+                      className="flex gap-2 items-center justify-center"
+                      onClick={() => handleAddingCart(subService)}
+                    >
+                      <span>Add service</span>
+                      <FaCartArrowDown size={20} />
+                    </Button>
+                  )}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                    {forAdmin && (
+                      <div className="flex gap-4">
+                        <Button
+                          variant="text"
+                          color="red"
+                          onClick={deleteSubService}
+                          className="flex items-center gap-2"
+                        >
+                          <MdDelete size={20} />
+                          Delete
+                        </Button>
+                        <Button
+                          variant="gradient"
+                          color="blue"
+                          onClick={handleEditDialog}
+                          className="flex items-center gap-2"
+                        >
+                          <MdEdit size={20} />
+                          Edit
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="p-4 grid grid-cols-1 gap-4 overflow-auto">
+            </DialogBody>
+          </Dialog>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {editDialogOpen && (
+          <Dialog
+            size="sm"
+            open={editDialogOpen}
+            handler={handleEditDialog}
+            animate={{
+              mount: { scale: 1, y: 0 },
+              unmount: { scale: 0.9, y: -100 },
+            }}
+          >
+            <DialogHeader className="flex justify-between items-center">
+              <h3 className="text-2xl font-bold text-gray-900">
+                Edit Sub Service
+              </h3>
+              <Button
+                variant="text"
+                color="blue-gray"
+                onClick={handleEditDialog}
+              >
+                <RxCross2 size={24} />
+              </Button>
+            </DialogHeader>
+            <DialogBody divider>
+              <form className="grid gap-4">
                 <Input
-                  className="bg-white"
-                  color="indigo"
                   label="Name"
                   value={subService.name}
                   onChange={(e) =>
@@ -309,20 +408,16 @@ const SubServiceCard = ({
                   }
                 />
                 <Input
-                  className="bg-white"
-                  color="indigo"
                   label="Price"
-                  onInput={(e) => {
-                    e.target.value = e.target.value.replace(/\D/g, ""); // Only allows digits
-                  }}
                   value={subService.price}
                   onChange={(e) =>
-                    setSubService({ ...subService, price: e.target.value })
+                    setSubService({
+                      ...subService,
+                      price: e.target.value.replace(/\D/g, ""),
+                    })
                   }
                 />
                 <Textarea
-                  className="bg-white"
-                  color="indigo"
                   label="Description"
                   value={subService.description}
                   onChange={(e) =>
@@ -333,53 +428,32 @@ const SubServiceCard = ({
                   }
                 />
                 <Select
-                  className="bg-white"
                   label="Status"
                   value={subService.status}
-                  onChange={(e) => setSubService({ ...subService, status: e })}
+                  onChange={(value) =>
+                    value && setSubService({ ...subService, status: value })
+                  }
                 >
-                  <Option className="text-teal-500" value="active">
-                    Active
-                  </Option>
-                  <Option className="text-red-500" value="inActive">
-                    InActive
-                  </Option>
+                  <Option value="active">Active</Option>
+                  <Option value="inActive">Inactive</Option>
                 </Select>
-              </div>
-
-              <DialogFooter>
-                <Button
-                  variant="text"
-                  color="red"
-                  onClick={handleAlterEditDailog}
-                  className="mr-1"
-                >
-                  <span>Cancel</span>
-                </Button>
-                <Button
-                  variant="gradient"
-                  color="teal"
-                  onClick={handleUpdateSubServiceDetails}
-                >
-                  <span>Update</span>
-                </Button>
-              </DialogFooter>
-            </Dialog>
-          </DialogFooter>
-        </Dialog>
-        <Button
-          onClick={deleteSubService}
-          size="lg"
-          fullWidth={true}
-          variant="gradient"
-          color="red"
-          className="flex gap-1 items-center justify-center"
-        >
-          Delete <MdDelete size={20} />
-        </Button>
-      </CardFooter>
-    </Card>
+              </form>
+            </DialogBody>
+            <DialogFooter className="space-x-2">
+              <Button variant="outlined" color="red" onClick={handleEditDialog}>
+                Cancel
+              </Button>
+              <Button
+                variant="gradient"
+                color="green"
+                onClick={() => updateSubService(subService)}
+              >
+                Update
+              </Button>
+            </DialogFooter>
+          </Dialog>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
-};
-
-export default SubServiceCard;
+}

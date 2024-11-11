@@ -179,6 +179,7 @@ const ServicePage = () => {
               {service.subServices?.map((sub, index) => {
                 return (
                   <SubServiceCard
+                    forAdmin={true}
                     key={index}
                     sub={sub}
                     index={index}

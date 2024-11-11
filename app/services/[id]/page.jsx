@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import GiveReview from "@/components/services/review/GiveReview";
 import Review from "@/components/services/review/Review";
 import Loading from "@/components/Loading";
+import SubServiceCard from "@/components/admin/services/SubServiceCard";
 
 const NextArrow = ({ onClick }) => {
   return (
@@ -393,69 +394,17 @@ const Service = () => {
             {service.subServices?.length <= 4 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center">
                 {service.subServices?.map((subService, index) => (
-                  <Card className="mb-3 max-w-72 overflow-hidden" key={index}>
-                    <Image
-                      width={100}
-                      height={100}
-                      src={subService.icon?.url}
-                      alt="Service Icon"
-                      className="object-cover w-64 aspect-square"
-                    />
-                    <div className="p-4">
-                      <div className="flex flex-col justify-start gap-2">
-                        <span
-                          className={`border w-fit text-xs ${
-                            subService.status === "active"
-                              ? "bg-teal-100"
-                              : "bg-red-100"
-                          } text-xs ${
-                            subService.status === "active"
-                              ? "text-teal-700"
-                              : "text-red-700"
-                          } px-2 py-1 rounded-full`}
-                        >
-                          {subService.status}
-                        </span>
-                        <Typography
-                          variant="h6"
-                          color="blue-gray"
-                          className="font-medium"
-                        >
-                          {subService.name}
-                        </Typography>
-                      </div>
-                      <div className="text-2xl font-bold text-teal-500">
-                        ₹{subService.price}
-                      </div>
-                    </div>
-                    <CardFooter className="pt-0 flex flex-col gap-2">
-                      {cartItems.some((sub) => sub._id === subService._id) ? (
-                        <Button
-                          size="lg"
-                          fullWidth
-                          variant="gradient"
-                          color="red"
-                          className="flex gap-2 items-center justify-center"
-                          onClick={() => removingCartItem(subService._id)}
-                        >
-                          <span>Remove Service</span>
-                          <IoBagRemove size={20} />
-                        </Button>
-                      ) : (
-                        <Button
-                          size="lg"
-                          fullWidth
-                          variant="gradient"
-                          color="indigo"
-                          className="flex gap-2 items-center justify-center"
-                          onClick={() => handleAddingCart(subService)}
-                        >
-                          <span>Add to cart</span>
-                          <FaCartArrowDown size={20} />
-                        </Button>
-                      )}
-                    </CardFooter>
-                  </Card>
+                  <SubServiceCard
+                    forAdmin={false}
+                    cartItems={cartItems}
+                    removingCartItem={removingCartItem}
+                    handleAddingCart={handleAddingCart}
+                    key={index}
+                    sub={subService}
+                    index={index}
+                    serviceId={id}
+                    subServices={service.subServices}
+                  />
                 ))}
               </div>
             ) : (
