@@ -1,11 +1,15 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import ShowServices from "@/components/home/ShowServices";
-import axios, { all } from "axios";
-import { useDispatch } from "react-redux";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import { setGeolocationDenied } from "@/redux/slice/locationSlice";
 import Loading from "@/components/Loading";
 import { toast } from "sonner";
+import {
+  setTopBookedServices,
+  setTopBookedServicesLoading,
+} from "@/redux/slice/topBookedServicesSlice";
 
 const fetchServices = async (cityState) => {
   try {
@@ -43,9 +47,6 @@ const getAddress = async ({ lat, lng }) => {
   }
 };
 const AllServices = () => {
-  const [loading, setLoading] = useState(true);
-
-  const [services, setServices] = useState([]);
   const [selectedState, setSelectedState] = useState("Bihar");
   const [selectedCity, setCity] = useState("patna");
 
@@ -54,30 +55,33 @@ const AllServices = () => {
   }, []);
 
   const dispatch = useDispatch();
+  const topBookedServices = useSelector((state) => state.topServices);
+
   const getServices = useCallback(
     async (cityState, message) => {
       try {
+        dispatch(setTopBookedServicesLoading(true));
         const response = await fetchServices(cityState);
         const allServices = response.data;
         if (message && allServices.length === 0) {
           toast.warning(message);
         }
-        setServices(allServices);
+        dispatch(setTopBookedServices(allServices));
         dispatch(setGeolocationDenied(false));
       } catch (error) {
         console.error("Error fetching top services:", error);
       } finally {
-        setLoading(false);
+        dispatch(setTopBookedServicesLoading(false));
       }
     },
-    [dispatch, setServices]
+    [dispatch]
   );
 
   useEffect(() => {
     const getUserLocation = () => {
       if (!navigator.geolocation) {
         console.log("Geolocation not supported");
-        setLoading(false);
+        dispatch(setTopBookedServicesLoading(false));
         return;
       }
 
@@ -93,13 +97,13 @@ const AllServices = () => {
             localStorage.setItem("cityState", JSON.stringify(cityState));
           } catch (error) {
             console.log("Error getting address:", error);
-            setLoading(false);
+            dispatch(setTopBookedServicesLoading(false));
           }
         },
         (error) => {
           console.log("Error getting location:", error.message);
           dispatch(setGeolocationDenied(true));
-          setLoading(false);
+          dispatch(setTopBookedServicesLoading(false));
         }
       );
     };
@@ -110,7 +114,7 @@ const AllServices = () => {
     } else {
       getUserLocation();
     }
-  }, [dispatch, setLoading, getServices, setSelectedCity]);
+  }, [dispatch, getServices, setSelectedCity]);
 
   const handleLocationChange = () => {
     if (selectedState && selectedCity) {
@@ -126,14 +130,14 @@ const AllServices = () => {
     <>
       <div
         className={`grid place-items-center min-h-screen absolute w-full bg-white transition-all duration-700 top-0 ${
-          loading ? "opacity-100" : "opacity-0"
-        } ${loading ? "z-50" : "-z-50"}`}
+          topBookedServices.loading ? "opacity-100" : "opacity-0"
+        } ${topBookedServices.loading ? "z-50" : "-z-50"}`}
       >
         <Loading />
       </div>
       <div
         className={`${
-          loading ? "hidden" : "block"
+          topBookedServices.loading ? "hidden" : "block"
         } transition-all duration-700 mb-10`}
       >
         <div className="w-full flex flex-col justify-center items-center mt-8 px-4">
@@ -145,7 +149,6 @@ const AllServices = () => {
           </h2>
         </div>
         <ShowServices
-          topServices={services}
           selectedState={selectedState}
           setSelectedState={setSelectedState}
           setSelectedCity={setSelectedCity}

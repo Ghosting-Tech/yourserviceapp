@@ -77,27 +77,27 @@ export default function Nav() {
     // eslint-disable-next-line
   }, [user, token]);
 
-  const handleTestNotification = async () => {
-    if (!token) {
-      console.error("No token available for notifications");
-      return;
-    }
+  // const handleTestNotification = async () => {
+  //   if (!token) {
+  //     console.error("No token available for notifications");
+  //     return;
+  //   }
 
-    const response = await fetch("/api/send-notification", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: token,
-        title: "Test Notification",
-        message: "This is a test notification",
-        link: "/contact",
-      }),
-    });
+  //   const response = await fetch("/api/send-notification", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       token: token,
+  //       title: "Test Notification",
+  //       message: "This is a test notification",
+  //       link: "/contact",
+  //     }),
+  //   });
 
-    const data = await response.json();
-  };
+  //   const data = await response.json();
+  // };
 
   return (
     <div className="mx-auto max-w-full px-4 py-2 rounded-none shadow-none border-none bg-transparent z-50">

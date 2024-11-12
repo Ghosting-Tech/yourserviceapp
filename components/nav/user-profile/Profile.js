@@ -269,12 +269,12 @@ const Profile = ({
   };
   const handleUpdatePassword = async () => {
     try {
-      const response = await axios.put("/api/users/update", {
+      const { data } = await axios.put("/api/users/update", {
         password: updatedPassword,
         phoneNumber: forgetPasswordNumber,
       });
 
-      if (response.status === 201) {
+      if (data.success) {
         setOpenForgotPassword(false);
         setLoginData({ ...loginData, phoneNumber: forgetPasswordNumber });
         setForgotPasswordGeneratedOtp(0);
@@ -287,6 +287,7 @@ const Profile = ({
       }
     } catch (err) {
       console.error(err);
+      toast.error(err);
     }
   };
   const [isOtpButtonDisabled, setIsOtpButtonDisabled] = useState(false);

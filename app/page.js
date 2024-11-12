@@ -4,11 +4,15 @@ import { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import Loading from "@/components/Loading";
 import ShowServices from "@/components/home/ShowServices";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setGeolocationDenied } from "@/redux/slice/locationSlice";
 import Testimonial from "@/components/home/testimonial/Testimonial";
 import Blogs from "@/components/BlogSection";
 import { toast } from "sonner";
+import {
+  setTopBookedServices,
+  setTopBookedServicesLoading,
+} from "@/redux/slice/topBookedServicesSlice";
 
 // Dynamically import components
 const Hero = dynamic(() => import("@/components/home/Hero"), { ssr: false });
@@ -27,7 +31,7 @@ const VideoCarousel = lazy(() => import("../components/home/VideoCarousel"));
 const fetchTopServices = async (cityState) => {
   try {
     const response = await axios.post(
-      "/api/services/top-booked?limit=10",
+      "/api/services/top-booked?limit=100",
       cityState
     );
     console.log("Top services response:", response.data);
@@ -62,8 +66,6 @@ const getAddress = async ({ lat, lng }) => {
 };
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [topServices, setTopServices] = useState([]);
   const [selectedState, setSelectedState] = useState("Bihar");
   const [selectedCity, setCity] = useState("patna");
 
@@ -72,31 +74,35 @@ export default function Home() {
   }, []);
 
   const dispatch = useDispatch();
+  const topBookedServices = useSelector((state) => state.topServices);
 
   const getTopServices = useCallback(
     async (cityState, message) => {
       try {
+        dispatch(setTopBookedServicesLoading(true));
         const response = await fetchTopServices(cityState);
         const allServices = response.data;
+        dispatch(setTopBookedServicesLoading(false));
         if (message && allServices.length === 0) {
           toast.warning(message);
         }
-        setTopServices(allServices);
+        dispatch(setTopBookedServices(allServices));
         dispatch(setGeolocationDenied(false));
       } catch (error) {
         console.error("Error fetching top services:", error);
       } finally {
-        setLoading(false);
+        dispatch(setTopBookedServicesLoading(false));
       }
     },
-    [dispatch, setTopServices]
+    [dispatch]
   );
 
   useEffect(() => {
     const getUserLocation = () => {
       if (!navigator.geolocation) {
         console.log("Geolocation not supported");
-        setLoading(false);
+
+        dispatch(setTopBookedServicesLoading(false));
         return;
       }
 
@@ -112,24 +118,24 @@ export default function Home() {
             localStorage.setItem("cityState", JSON.stringify(cityState));
           } catch (error) {
             console.log("Error getting address:", error);
-            setLoading(false);
+            dispatch(setTopBookedServicesLoading(false));
           }
         },
         (error) => {
           console.log("Error getting location:", error.message);
           dispatch(setGeolocationDenied(true));
-          setLoading(false);
+          dispatch(setTopBookedServicesLoading(false));
         }
       );
     };
 
     const storedLocation = localStorage.getItem("cityState");
-    if (storedLocation) {
+    if (storedLocation && topBookedServices.services.length === 0) {
       getTopServices(JSON.parse(storedLocation));
     } else {
       getUserLocation();
     }
-  }, [dispatch, setLoading, getTopServices, setSelectedCity]);
+  }, [dispatch, getTopServices, setSelectedCity]);
 
   const handleLocationChange = () => {
     if (selectedState && selectedCity) {
@@ -142,27 +148,27 @@ export default function Home() {
     }
   };
 
-  if (loading) return <Loading />;
+  if (topBookedServices.loading) return <Loading />;
 
   return (
     <main>
-      <Suspense fallback={<Loading />}>
+      <>
         <HeroMovingIcons />
         <Hero />
         <ShowServices
-          topServices={topServices}
           selectedState={selectedState}
           setSelectedState={setSelectedState}
           setSelectedCity={setSelectedCity}
           handleLocationChange={handleLocationChange}
           selectedCity={selectedCity}
+          forAllService={false}
         />
         <VideoCarousel />
         <ServiceSection />
         <CallToAction />
         <Testimonial />
         <Blogs />
-      </Suspense>
+      </>
     </main>
   );
 }

@@ -16,8 +16,19 @@ export async function POST(request) {
 export async function PUT(request) {
   const data = await request.json();
   await connectMongoDB();
+
   const user = await User.findOne({ phoneNumber: data.phoneNumber });
+  if (!user) {
+    return NextResponse.json(
+      { success: false, message: "User not found" },
+      { status: 404 }
+    );
+  }
+
   user.password = data.password;
   await user.save();
-  return NextResponse.json(user, { status: 201 });
+  return NextResponse.json(
+    { success: true, message: "Password updated" },
+    { status: 201 }
+  );
 }

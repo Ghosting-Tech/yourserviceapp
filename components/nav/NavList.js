@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import Fuse from "fuse.js";
 import Image from "next/image";
 import ServicesList from "./ServiceList";
+import { useSelector } from "react-redux";
 
 export default function NavList() {
   const [open2, setOpen2] = useState(false);
@@ -18,25 +19,32 @@ export default function NavList() {
   const [allServices, setAllServices] = useState([]);
   const [searchedData, setSearchedData] = useState([]);
   const [searchError, setSearchError] = useState("");
+
+  const topBookedServices = useSelector((state) => state.topServices);
   const gettingServices = async () => {
     try {
-      const fetchedData = await fetch("/api/services", {
-        method: "GET",
+      const storedLocation = localStorage.getItem("cityState");
+      if (!storedLocation && topBookedServices.services.length <= 0) {
+        return;
+      }
+      const fetchedData = await fetch("/api/services/top-booked?limit=100", {
+        method: "POST",
+        body: JSON.stringify(storedLocation),
         headers: {
           "Content-Type": "application/json",
         },
       });
       const response = await fetchedData.json();
+      console.log(response);
       function getTopBookedServices(services, topN) {
         return services
           .sort((a, b) => b.bookings.length - a.bookings.length)
-          .filter((service) => service.status === "active")
           .slice(0, topN);
       }
 
-      const topBookedServices = getTopBookedServices(response, 6);
+      const topServices = getTopBookedServices(response, 6);
       setAllServices(response);
-      setTopServices(topBookedServices);
+      setTopServices(topServices);
     } catch (err) {
       console.error(err);
     }
