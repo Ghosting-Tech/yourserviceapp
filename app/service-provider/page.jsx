@@ -3,18 +3,18 @@ import React, { useState, useEffect, useCallback } from "react";
 import { FaArrowLeft, FaHistory } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { Button, Badge, Avatar } from "@material-tailwind/react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileInfo from "@/components/service-provider/ProfileInfo";
 import ServicesList from "@/components/service-provider/ServiceList";
 import EditProfileDialog from "@/components/service-provider/EditProfileDialog";
 import AddServiceDialog from "@/components/service-provider/AddServiceDialog";
 import axios from "axios";
 import ServiceProviderLocation from "@/components/service-provider/ServiceProviderLocation";
+import { setTopBookedServices } from "@/redux/slice/topBookedServicesSlice";
 
 const ServiceProvider = () => {
   const reduxUser = useSelector((state) => state.user.user);
   const [user, setUser] = useState(reduxUser);
-  const [allServices, setAllServices] = useState([]);
   const [updatedServices, setUpdatedServices] = useState(
     reduxUser.services || []
   );
@@ -34,13 +34,24 @@ const ServiceProvider = () => {
   const handleOpen = () => setOpen(!open);
   const handleOpen2 = () => setOpen2(!open2);
 
+  const topBookedServices = useSelector((state) => state.topServices.services);
+  const dispatch = useDispatch();
+
   const getAllService = useCallback(async () => {
-    const response = await fetch("/api/services", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+    const storedLocation = localStorage.getItem("cityState");
+    if (!storedLocation && topBookedServices.services.length <= 0) {
+      return;
+    }
+    const response = await fetch("/api/services/top-booked?limit=100", {
+      method: "POST",
+      body: JSON.stringify(storedLocation),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     const data = await response.json();
-    setAllServices(data);
+    dispatch(setTopBookedServices(data));
+    //eslint-disable-next-line
   }, []);
 
   const fetchingServices = useCallback(async () => {
@@ -148,7 +159,6 @@ const ServiceProvider = () => {
       <AddServiceDialog
         open={open2}
         handleOpen={handleOpen2}
-        allServices={allServices}
         updatedServices={updatedServices}
         setUpdatedServices={setUpdatedServices}
         user={user}

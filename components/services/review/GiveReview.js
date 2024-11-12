@@ -4,7 +4,7 @@ import { Textarea, Button, Rating } from "@material-tailwind/react";
 
 export default function GiveReview({ handleReviewSubmit, review, setReview }) {
   return (
-    <div className="px-8 py-6 bg-white rounded-md w-1/2 mx-auto">
+    <div className="px-8 py-6 bg-white rounded-md w-full md:w-1/2 mx-auto">
       <h3 className="text-2xl text-blue-gray-500 font-semibold mb-4 text-center">
         Rate and Review
       </h3>

@@ -13,7 +13,6 @@ import Image from "next/image";
 const AddServiceDialog = ({
   open,
   handleOpen,
-  allServices,
   updatedServices,
   setUpdatedServices,
   user,
@@ -22,6 +21,7 @@ const AddServiceDialog = ({
 }) => {
   // Temporary state to hold selected services in the dialog
   const [selectedServices, setSelectedServices] = useState([]);
+  const allServices = useSelector((state) => state.topServices.services);
 
   // Initialize the selectedServices when the dialog is opened
   useEffect(() => {

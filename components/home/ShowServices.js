@@ -8,7 +8,6 @@ import Services from "@/components/Services";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 export default function ShowServices({
-  topServices,
   selectedState,
   selectedCity,
   setSelectedState,
@@ -22,6 +21,8 @@ export default function ShowServices({
     (state) => state.location.geolocationDenied
   );
 
+  const topServices = useSelector((state) => state.topServices.services);
+
   useEffect(() => {
     if (selectedState) {
       setCities(locationData[selectedState] || []);
@@ -29,7 +30,7 @@ export default function ShowServices({
     } else {
       setCities([]);
     }
-  }, [selectedState]);
+  }, [selectedState, setSelectedCity]);
 
   return (
     <div>

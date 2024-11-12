@@ -60,5 +60,11 @@ export async function POST(request) {
       name: "",
     },
   });
-  return NextResponse.json(user, { status: 201 });
+  return NextResponse.json(
+    {
+      success: true,
+      message: "Registered successfully",
+    },
+    { status: 200 }
+  );
 }

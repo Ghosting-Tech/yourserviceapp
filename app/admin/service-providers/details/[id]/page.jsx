@@ -268,7 +268,10 @@ const ServiceProviderDetailsPage = () => {
                 className="relative h-48 shadow-none"
                 onClick={() => handleOpen(serviceProvider?.id1?.image?.url)}
               >
-                <img
+                <Image
+                  width={500}
+                  alt="service provider Id-1"
+                  height={500}
                   src={serviceProvider?.id1?.image?.url}
                   className="h-full w-full object-cover"
                 />
@@ -285,7 +288,10 @@ const ServiceProviderDetailsPage = () => {
                 className="relative h-48 shadow-none"
                 onClick={() => handleOpen(serviceProvider?.id2?.image?.url)}
               >
-                <img
+                <Image
+                  width={500}
+                  height={500}
+                  alt="service provider Id-1"
                   src={serviceProvider?.id2?.image?.url}
                   className="h-full w-full object-cover"
                 />
@@ -305,7 +311,9 @@ const ServiceProviderDetailsPage = () => {
             className="bg-transparent shadow-none"
           >
             <div className="relative h-[90vh] w-full">
-              <img
+              <Image
+                width={500}
+                height={500}
                 src={selectedImage}
                 alt="Full size preview"
                 className="h-full w-full object-contain rounded-lg"
