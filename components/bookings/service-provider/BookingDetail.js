@@ -247,17 +247,19 @@ const BookingDetail = ({ booking, setBooking }) => {
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow w-full">
-            <h3 className="text-md md:text-xl font-semibold mb-4 text-gray-800">
-              Customer Details
-            </h3>
-            <UserDetail
-              name={booking.fullname}
-              profileImage={booking.profileImage}
-              email={booking.email}
-              phoneNumber={booking.phoneNumber}
-            />
-          </div>
+          {booking.acceptedByServiceProvider && (
+            <div className="bg-white p-6 rounded-lg shadow w-full">
+              <h3 className="text-md md:text-xl font-semibold mb-4 text-gray-800">
+                Customer Details
+              </h3>
+              <UserDetail
+                name={booking.fullname}
+                profileImage={booking.profileImage}
+                email={booking.email}
+                phoneNumber={booking.phoneNumber}
+              />
+            </div>
+          )}
         </div>
       </div>
       <LocationDetails booking={booking} />
