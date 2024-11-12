@@ -51,6 +51,7 @@ const ServiceProvider = () => {
     });
     const data = await response.json();
     dispatch(setTopBookedServices(data));
+    //eslint-disable-next-line
   }, []);
 
   const fetchingServices = useCallback(async () => {

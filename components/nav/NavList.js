@@ -51,6 +51,7 @@ export default function NavList() {
   };
   useEffect(() => {
     gettingServices();
+    //eslint-disable-next-line
   }, []);
 
   const fuseOptions = {

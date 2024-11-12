@@ -135,6 +135,7 @@ export default function Home() {
     } else {
       getUserLocation();
     }
+    //eslint-disable-next-line
   }, [dispatch, getTopServices, setSelectedCity]);
 
   const handleLocationChange = () => {
