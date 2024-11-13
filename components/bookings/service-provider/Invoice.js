@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import { toast } from "sonner";
+import sendSmsMessage from "@/utils/sendSmsMessage";
 
 const Invoice = ({ selectedBooking, setSelectedBooking }) => {
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
@@ -71,10 +72,20 @@ const Invoice = ({ selectedBooking, setSelectedBooking }) => {
       );
 
       setSelectedBooking(response.data);
+      console.log({ data: response.data });
       toast.success("Invoice created successfully");
       handleCreateInvoiceDialog();
       setNewInvoice(initialInvoice);
       setDisableTitleInput(false);
+      const sms = await sendSmsMessage(
+        `Dear {#var#}, an invoice has been generated for your recent {#var#} (ID: {#var#}) by your service provider. Please review and make payment at your convenience. Track your booking here: {#var#}. -GHOSTING WEBTECH PRIVATE LIMITED`,
+        "1707173018366282421"
+      );
+
+      if (!sms.success) {
+        toast.error("Failed to send new invoice created message.");
+        return;
+      }
 
       // handle sending notification to user after completing the service
       axios.post(`/api/send-notification/by-user-phone`, {

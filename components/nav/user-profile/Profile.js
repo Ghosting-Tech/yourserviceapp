@@ -251,7 +251,7 @@ const Profile = ({
     const sms = await sendSmsMessage(
       forgetPasswordNumber,
       `Dear user, Your OTP for forget password phone number verification is ${otp}. Please enter this OTP to complete the registration process. Regards, Ghosting Webtech Pvt Ltd`,
-      "1707172906187016975"
+      "1707173020034820738"
     );
 
     if (!sms.success) {
