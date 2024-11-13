@@ -248,13 +248,13 @@ const Profile = ({
     const otp = generateOTP();
     setForgotPasswordGeneratedOtp(otp);
 
-    const sms = await sendSmsMessage(
-      forgetPasswordNumber,
-      `Dear user, Your OTP for forget password phone number verification is ${otp}. Please enter this OTP to complete the registration process. Regards, Ghosting Webtech Pvt Ltd`,
-      "1707173020034820738"
-    );
+    const { data } = await axios.post(`/api/send-sms`, {
+      number: forgetPasswordNumber,
+      message: `Dear user, Your OTP for forget password phone number verification is ${otp}. Please enter this OTP to complete the process. Regards, Ghosting Webtech Pvt Ltd`,
+      templateid: "1707173020034820738",
+    });
 
-    if (!sms.success) {
+    if (!data.success) {
       toast.error("Failed to send verification OTP.");
       return;
     }
@@ -476,6 +476,7 @@ const Profile = ({
                             onChange={(e) =>
                               setForgetPasswordNumber(e.target.value)
                             }
+                            disabled={otpSended}
                             label="Enter Your Phone Number"
                             required
                             onInput={(e) => {

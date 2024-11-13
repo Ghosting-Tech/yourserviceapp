@@ -320,30 +320,31 @@ export default function SubServiceCard({
                   <p className="text-gray-600 dark:text-gray-300 text-md leading-relaxed">
                     {subService.description}
                   </p>
-                  {cartItems.some((sub) => sub._id === subService._id) ? (
-                    <Link href={"/cart"}>
+                  {!forAdmin &&
+                    (cartItems.some((sub) => sub._id === subService._id) ? (
+                      <Link href={"/cart"}>
+                        <Button
+                          size="sm"
+                          variant="outlined"
+                          color="blue"
+                          className="flex gap-2 items-center justify-center"
+                        >
+                          <span>Next</span>
+                          <FaArrowRightLong />
+                        </Button>
+                      </Link>
+                    ) : (
                       <Button
                         size="sm"
-                        variant="outlined"
+                        variant="gradient"
                         color="blue"
                         className="flex gap-2 items-center justify-center"
+                        onClick={() => handleAddingCart(subService)}
                       >
-                        <span>Next</span>
-                        <FaArrowRightLong />
+                        <span>Add service</span>
+                        <FaCartArrowDown size={20} />
                       </Button>
-                    </Link>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="gradient"
-                      color="blue"
-                      className="flex gap-2 items-center justify-center"
-                      onClick={() => handleAddingCart(subService)}
-                    >
-                      <span>Add service</span>
-                      <FaCartArrowDown size={20} />
-                    </Button>
-                  )}
+                    ))}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                     {forAdmin && (
                       <div className="flex gap-4">

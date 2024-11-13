@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogFooter,
@@ -9,8 +9,12 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { setTopBookedServices } from "@/redux/slice/topBookedServicesSlice";
+import { toast } from "sonner";
 
 const AddServiceDialog = ({
+  allServices,
   open,
   handleOpen,
   updatedServices,
@@ -21,7 +25,6 @@ const AddServiceDialog = ({
 }) => {
   // Temporary state to hold selected services in the dialog
   const [selectedServices, setSelectedServices] = useState([]);
-  const allServices = useSelector((state) => state.topServices.services);
 
   // Initialize the selectedServices when the dialog is opened
   useEffect(() => {
@@ -58,7 +61,7 @@ const AddServiceDialog = ({
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4  min-h-52 overflow-auto no-scrollbar">
         {allServices?.map((service, index) => (
-          <ListItem className="p-0" key={index}>
+          <ListItem className="p-0 h-fit" key={index}>
             <label
               htmlFor={service._id}
               className="flex w-full cursor-pointer items-center px-3 py-2"
@@ -89,7 +92,7 @@ const AddServiceDialog = ({
                 height={100}
                 src={service.icon.url}
                 alt=""
-                className="w-10 object-cover mr-2"
+                className="w-10 aspect-square object-cover mr-2 rounded"
               />
               <Typography
                 color="blue-gray"

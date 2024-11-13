@@ -11,6 +11,7 @@ import AddServiceDialog from "@/components/service-provider/AddServiceDialog";
 import axios from "axios";
 import ServiceProviderLocation from "@/components/service-provider/ServiceProviderLocation";
 import { setTopBookedServices } from "@/redux/slice/topBookedServicesSlice";
+import { toast } from "sonner";
 
 const ServiceProvider = () => {
   const reduxUser = useSelector((state) => state.user.user);
@@ -34,25 +35,32 @@ const ServiceProvider = () => {
   const handleOpen = () => setOpen(!open);
   const handleOpen2 = () => setOpen2(!open2);
 
-  const topBookedServices = useSelector((state) => state.topServices.services);
+  const topBookedServices = useSelector((state) => state.topServices);
   const dispatch = useDispatch();
 
   const getAllService = useCallback(async () => {
-    const storedLocation = localStorage.getItem("cityState");
-    if (!storedLocation && topBookedServices.services.length <= 0) {
+    const storedLocation = JSON.parse(localStorage.getItem("cityState"));
+    console.log({ storedLocation });
+    if (!storedLocation.city) {
+      toast.error("Please select a location for continue!");
+    }
+    if (topBookedServices.services.length > 0) {
+      console.log("All services already fetched");
       return;
     }
-    const response = await fetch("/api/services/top-booked?limit=100", {
-      method: "POST",
-      body: JSON.stringify(storedLocation),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
+    const { data } = await axios.post(
+      "/api/services/top-booked?limit=100",
+      storedLocation
+    );
+
+    console.log("All services", data);
     dispatch(setTopBookedServices(data));
     //eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    console.log(topBookedServices);
+  }, [topBookedServices]);
 
   const fetchingServices = useCallback(async () => {
     if (updatedServices.length > 0) {
@@ -74,6 +82,7 @@ const ServiceProvider = () => {
     getAllService();
     fetchingServices();
     setLoading(false);
+    //eslint-disable-next-line
   }, [getAllService, fetchingServices]);
 
   if (loading) {
@@ -157,6 +166,7 @@ const ServiceProvider = () => {
         setUser={setUser}
       />
       <AddServiceDialog
+        allServices={topBookedServices.services}
         open={open2}
         handleOpen={handleOpen2}
         updatedServices={updatedServices}
