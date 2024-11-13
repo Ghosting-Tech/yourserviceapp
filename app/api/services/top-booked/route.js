@@ -10,6 +10,8 @@ export async function POST(request) {
     const limit = Math.min(parseInt(searchParams.get("limit")) || 10, 100);
 
     const data = await request.json();
+
+    console.log("Location", data);
     await connectMongoDB();
 
     const user = await isLoggedIn(request);

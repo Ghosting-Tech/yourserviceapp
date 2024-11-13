@@ -164,14 +164,15 @@ const Services = () => {
 
   const fetchingInitialData = async () => {
     try {
-      const fetchedData = await fetch("/api/services", {
-        method: "GET",
+      const fetchedData = await fetch("/api/services/top-booked?limit=100", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({}),
       });
       const response = await fetchedData.json();
-      console.log(response);
+      console.log("Admin services: ", response);
       setAllServices(response);
     } catch (err) {
       console.error(err);

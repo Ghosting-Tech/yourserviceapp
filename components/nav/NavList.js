@@ -23,8 +23,12 @@ export default function NavList() {
   const topBookedServices = useSelector((state) => state.topServices);
   const gettingServices = async () => {
     try {
-      const storedLocation = localStorage.getItem("cityState");
-      if (!storedLocation && topBookedServices.services.length <= 0) {
+      const storedLocation = JSON.parse(localStorage.getItem("cityState"));
+      if (!storedLocation.city) {
+        toast.error("Please select a location for continue!");
+      }
+      if (topBookedServices.services.length > 0) {
+        console.log("All services already fetched");
         return;
       }
       const fetchedData = await fetch("/api/services/top-booked?limit=100", {
@@ -35,7 +39,7 @@ export default function NavList() {
         },
       });
       const response = await fetchedData.json();
-      console.log(response);
+      // console.log(response);
       function getTopBookedServices(services, topN) {
         return services
           .sort((a, b) => b.bookings.length - a.bookings.length)
@@ -50,7 +54,7 @@ export default function NavList() {
     }
   };
   useEffect(() => {
-    gettingServices();
+    // gettingServices();
     //eslint-disable-next-line
   }, []);
 

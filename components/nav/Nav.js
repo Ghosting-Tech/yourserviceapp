@@ -109,9 +109,9 @@ export default function Nav() {
           <Image
             width={300}
             height={300}
-            src="/logo/pbc-logo.png"
+            src="/logo/logo.svg"
             alt="logo"
-            className="cursor-pointer w-40 md:w-20 lg:w-20 object-cover"
+            className="cursor-pointer w-40 object-cover"
           />
         </Link>
         <div className="hidden gap-2 lg:flex lg:items-center lg:justify-end w-full">
