@@ -64,6 +64,7 @@ const BookingDetail = ({ booking, setBooking }) => {
         ...booking,
         otpVerified: true,
         status: "Service provider has been reached!",
+        actionType: "otpVerification",
       };
 
       setBooking(postData);

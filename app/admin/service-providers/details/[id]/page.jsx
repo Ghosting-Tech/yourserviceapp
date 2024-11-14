@@ -28,6 +28,8 @@ import ServicesList from "@/components/service-provider/ServiceList";
 import Link from "next/link";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { PiBook } from "react-icons/pi";
+import { deleteObject, ref } from "firebase/storage";
+import { storage } from "@/firebase";
 
 const ServiceProviderDetailsPage = () => {
   const { id } = useParams();

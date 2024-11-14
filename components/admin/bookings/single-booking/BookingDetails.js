@@ -36,11 +36,13 @@ const BookingDetails = ({ booking }) => {
       </div>
       <div className="flex items-center mt-2">
         <div>
-          <p className="text-sm text-gray-500 mb-1">Service Verification Image</p>
+          <p className="text-sm text-gray-500 mb-1">
+            Service Verification Image
+          </p>
           <Image
             width={500}
             height={500}
-            src={booking.verificationImage.url || "https://placehold.co/400"}
+            src={booking.verificationImage?.url || "https://placehold.co/400"}
             alt={booking.otpVerified ? "Verified" : "Not Verified"}
             className="w-32 h-32 rounded-lg object-cover"
           />

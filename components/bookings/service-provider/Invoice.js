@@ -66,6 +66,7 @@ const Invoice = ({ selectedBooking, setSelectedBooking }) => {
       const postData = {
         ...selectedBooking,
         invoices: newInvoice,
+        actionType: "invoiceCreation",
       };
       const response = await axios.put(
         `/api/bookings/${selectedBooking._id}`,
@@ -73,7 +74,6 @@ const Invoice = ({ selectedBooking, setSelectedBooking }) => {
       );
 
       setSelectedBooking(response.data);
-      console.log({ data: response.data });
       toast.success("Invoice created successfully");
       handleCreateInvoiceDialog();
       setNewInvoice(initialInvoice);

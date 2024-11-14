@@ -87,6 +87,31 @@ export async function GET(req, { params }) {
             templateid: "1707172967668368450",
           }),
         });
+
+        const url = await shortUrl(
+          `${process.env.PRODUCTION_URL}/service-provider/booking/${booking._id}`
+        );
+        const msg = `Hi ${
+          booking.assignedServiceProviders.name
+        }, The customer ${booking.fullname} has paid ₹${
+          booking.invoices?.total || 0
+        } for booking : ${
+          booking.bookingId
+        }. Track here: ${url}. Please proceed with the scheduled service. Check your dashboard for more detail. - GHOSTING WEBTECH PRIVATE LIMITED`;
+        const response = await fetch(
+          `${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              number: booking.assignedServiceProviders.phoneNumber,
+              message: msg,
+              templateid: "1707173018274296425",
+            }),
+          }
+        );
       } else {
         await Booking.findByIdAndUpdate(
           bookingId,
@@ -109,7 +134,7 @@ export async function GET(req, { params }) {
         ).toFixed(2);
 
         const cleanUrl = await shortUrl(
-          `https://demo.yourserviceapp.in/user/bookings/${booking._id}`
+          `${process.env.PRODUCTION_URL}/user/bookings/${booking._id}`
         );
 
         const itemNames = booking.cartItems.map((item) => item.name).join(", ");

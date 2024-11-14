@@ -29,41 +29,50 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   const { id } = params;
   const data = await request.json();
+
   await connectMongoDB();
   const updatedBooking = await Booking.findByIdAndUpdate(id, data, {
     new: true,
   });
 
-  //Sending SMS to the user after creating the Invoices
-  console.log(updatedBooking);
   const mobile = updatedBooking.phoneNumber;
   const name = updatedBooking.fullname;
-  const title = updatedBooking.invoices.title;
   const bookingId = updatedBooking.bookingId;
-  const url = await shortUrl(
-    `${process.env.PRODUCTION_URL}/user/bookings/${id}`
-  );
-  console.log(mobile, name, title, id, url);
-  const message = `Dear ${name}, an invoice has been generated for your recent ${title} (ID: ${bookingId}) by your service provider. Please review and make payment at your convenience. Track your booking here: ${url}. -GHOSTING WEBTECH PRIVATE LIMITED`;
+  const itemNames = updatedBooking.cartItems
+    .map((item) => item.name)
+    .join(", ");
+  const truncatedItemNames =
+    itemNames.length > 30 ? `${itemNames.slice(0, 27)}...` : itemNames;
+  let url = await shortUrl(`${process.env.PRODUCTION_URL}/user/bookings/${id}`);
+  let message, templateid;
+  if (data.actionType === "otpVerification") {
+    message = `Hi ${name} your service provider has arrived at your location for ${truncatedItemNames} (ID:${bookingId}). Please Track your booking here: ${url}. Thank you for choosing us! -GHOSTING WEBTECH PRIVATE LIMITED`;
+    templateid = "1707173018310464476";
+  } else if (data.actionType === "invoiceCreation") {
+    message = `Dear ${name}, an invoice has been generated for your recent ${truncatedItemNames} (ID: ${bookingId}) by your service provider. Please review and make payment at your convenience. Track your booking here: ${url}. -GHOSTING WEBTECH PRIVATE LIMITED`;
+    templateid = "1707173018366282421";
+  }
 
-  try {
-    await fetch(`${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        number: mobile,
-        message,
-        templateid: "1707173018366282421",
-      }),
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    return NextResponse.json(
-      { error: "An error occurred while sending the sms" },
-      { status: 500 }
-    );
+  if (message && templateid) {
+    try {
+      await fetch(`${process.env.PHONEPE_REDIRECT_URL}/api/send-sms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          number: mobile,
+          message,
+          templateid,
+        }),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      return NextResponse.json(
+        { error: "An error occurred while sending the SMS" },
+        { status: 500 }
+      );
+    }
   }
 
   return NextResponse.json(updatedBooking, { status: 201 });
