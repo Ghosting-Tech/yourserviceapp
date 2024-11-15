@@ -91,19 +91,20 @@ const ServiceShow = ({ service }) => {
           <div className="flex flex-col   max-h-44 overflow-auto no-scrollbar gap-4">
             {service.subServices?.map((sub, i) => {
               return (
-                <div
-                  key={i}
-                  className="flex items-center gap-4   bg-gray-100 p-3 rounded-md"
-                >
-                  <Image
-                    width={100}
-                    height={100}
-                    src={sub.icon?.url}
-                    alt={sub.name}
-                    className="w-16 h-16 rounded mr-4 drop-shadow-lg object-cover"
-                  />
-                  <span className="text-gray-800 font-medium">{sub.name}</span>
-                </div>
+                <Link href={`/services/${service._id}`} key={i}>
+                  <div className="flex items-center gap-4   bg-gray-100 p-3 rounded-md">
+                    <Image
+                      width={100}
+                      height={100}
+                      src={sub.icon?.url}
+                      alt={sub.name}
+                      className="w-16 h-16 rounded mr-4 drop-shadow-lg object-cover"
+                    />
+                    <span className="text-gray-800 font-medium">
+                      {sub.name}
+                    </span>
+                  </div>
+                </Link>
               );
             })}
           </div>

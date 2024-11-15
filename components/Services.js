@@ -90,19 +90,21 @@ const Service = ({ iconSrc, title, services, link, reviews }) => {
             </div>
           ) : (
             services.map((service, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 bg-gray-100 p-3 rounded-md "
-              >
-                <Image
-                  width={100}
-                  height={100}
-                  src={service.icon?.url}
-                  alt={service.name}
-                  className="w-20 h-20 rounded-lg mr-4 object-cover"
-                />
-                <span className="text-lg ">{service.name}</span>
-              </div>
+              <Link href={`/services/${link}`} key={index}>
+                <div
+                  key={index}
+                  className="flex items-center gap-4 bg-gray-100 p-3 rounded-md "
+                >
+                  <Image
+                    width={100}
+                    height={100}
+                    src={service.icon?.url}
+                    alt={service.name}
+                    className="w-20 h-20 rounded-lg mr-4 object-cover"
+                  />
+                  <span className="text-lg ">{service.name}</span>
+                </div>
+              </Link>
             ))
           )}
         </div>
