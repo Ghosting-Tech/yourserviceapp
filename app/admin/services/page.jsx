@@ -217,169 +217,173 @@ const Services = () => {
                 <h1 className="text-3xl font-bold text-indigo-500 font-lato p-4 text-center">
                   Create New Service
                 </h1>
-                <div className="p-4 grid grid-cols-1 gap-4 overflow-auto">
-                  <div className="flex items-center gap-4 flex-col md:flex-row">
-                    <Input
-                      color="indigo"
-                      label="Name"
-                      onChange={(e) =>
-                        setServiceData({ ...serviceData, name: e.target.value })
-                      }
-                    />
-                    <Select
-                      label="Status"
-                      onChange={(e) =>
-                        setServiceData({ ...serviceData, status: e })
-                      }
-                    >
-                      <Option className="text-teal-500" value="active">
-                        Active
-                      </Option>
-                      <Option className="text-red-500" value="inactive">
-                        InActive
-                      </Option>
-                    </Select>
-                  </div>
-                  <div className="flex items-center gap-4 flex-col md:flex-row">
-                    <Select
-                      label="State"
-                      name="state"
-                      color="indigo"
-                      value={selectedState}
-                      onChange={handleStateChange}
-                      required
-                    >
-                      {Object.keys(location).map((state) => (
-                        <Option key={state} value={state}>
-                          {state}
-                        </Option>
-                      ))}
-                    </Select>
-                    <Select
-                      label="City"
-                      name="city"
-                      color="indigo"
-                      value={selectedCity}
-                      onChange={handleCityChange}
-                      required
-                    >
-                      {cities.map((city) => (
-                        <Option key={city} value={city}>
-                          {city}
-                        </Option>
-                      ))}
-                    </Select>
-                    <Button
-                      size="sm"
-                      fullWidth
-                      onClick={() => {
-                        if (serviceData.cities.includes(selectedCity)) {
-                          toast.error("City already selected");
-                          return;
+                <div className="max-h-[80vh] overflow-y-auto no-scrollbar">
+                  <div className="p-4  grid grid-cols-1 gap-4 ">
+                    <div className="flex items-center gap-4 flex-col md:flex-row">
+                      <Input
+                        color="indigo"
+                        label="Name"
+                        onChange={(e) =>
+                          setServiceData({
+                            ...serviceData,
+                            name: e.target.value,
+                          })
                         }
+                      />
+                      <Select
+                        label="Status"
+                        onChange={(e) =>
+                          setServiceData({ ...serviceData, status: e })
+                        }
+                      >
+                        <Option className="text-teal-500" value="active">
+                          Active
+                        </Option>
+                        <Option className="text-red-500" value="inactive">
+                          InActive
+                        </Option>
+                      </Select>
+                    </div>
+                    <div className="flex items-center gap-4 flex-col md:flex-row">
+                      <Select
+                        label="State"
+                        name="state"
+                        color="indigo"
+                        value={selectedState}
+                        onChange={handleStateChange}
+                        required
+                      >
+                        {Object.keys(location).map((state) => (
+                          <Option key={state} value={state}>
+                            {state}
+                          </Option>
+                        ))}
+                      </Select>
+                      <Select
+                        label="City"
+                        name="city"
+                        color="indigo"
+                        value={selectedCity}
+                        onChange={handleCityChange}
+                        required
+                      >
+                        {cities.map((city) => (
+                          <Option key={city} value={city}>
+                            {city}
+                          </Option>
+                        ))}
+                      </Select>
+                      <Button
+                        size="sm"
+                        fullWidth
+                        onClick={() => {
+                          if (serviceData.cities.includes(selectedCity)) {
+                            toast.error("City already selected");
+                            return;
+                          }
+                          setServiceData({
+                            ...serviceData,
+                            cities: [...serviceData.cities, selectedCity],
+                          });
+                        }}
+                        color="purple"
+                        className="flex items-center justify-center gap-2"
+                      >
+                        <PlusIcon className="w-6 h-6" /> Add City
+                      </Button>
+                    </div>
+                    <div className="w-full max-w-4xl mx-auto p-6 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                        Selected Cities
+                      </h2>
+                      <div className="flex flex-wrap gap-4">
+                        {serviceData.cities.map((city, index) => (
+                          <div
+                            key={index}
+                            className="group flex items-center bg-white rounded-full pl-4 pr-2 py-2 shadow-md transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105"
+                          >
+                            <span className="text-gray-700 font-medium mr-2 text-sm">
+                              {city}
+                            </span>
+                            <button
+                              onClick={() => {
+                                setServiceData({
+                                  ...serviceData,
+                                  cities: serviceData.cities.filter(
+                                    (c) => c !== city
+                                  ),
+                                });
+                              }}
+                              className="p-1 rounded-full bg-gray-100 text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors duration-300 ease-in-out"
+                              aria-label={`Remove ${city}`}
+                            >
+                              <XMarkIcon className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      {cities.length === 0 && (
+                        <p className="text-gray-500 mt-4">
+                          No cities selected. Add some cities to get started!
+                        </p>
+                      )}
+                    </div>
+                    <Textarea
+                      label="Description"
+                      color="indigo"
+                      onChange={(e) =>
                         setServiceData({
                           ...serviceData,
-                          cities: [...serviceData.cities, selectedCity],
-                        });
-                      }}
-                      color="purple"
-                      className="flex items-center justify-center gap-2"
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                    <div className="flex items-center gap-4 flex-col md:flex-row">
+                      <div className="flex flex-col gap-2 cursor-pointer">
+                        <label htmlFor="icon">Icon</label>
+                        <input
+                          className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
+                          type="file"
+                          onChange={(e) =>
+                            setImages({ ...images, icon: e.target.files[0] })
+                          }
+                          id="icon"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2 cursor-pointer">
+                        <label htmlFor="gallery-images">Gallery Images</label>
+                        <input
+                          className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
+                          type="file"
+                          multiple
+                          id="gallery-images"
+                          onChange={(e) =>
+                            setImages({ ...images, images: e.target.files })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="text"
+                      color="red"
+                      onClick={handleOpen}
+                      className="mr-1"
                     >
-                      <PlusIcon className="w-6 h-6" /> Add City
+                      <span>Cancel</span>
                     </Button>
-                  </div>
-                  <div className="w-full max-w-4xl mx-auto p-6 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                      Selected Cities
-                    </h2>
-                    <div className="flex flex-wrap gap-4">
-                      {serviceData.cities.map((city, index) => (
-                        <div
-                          key={index}
-                          className="group flex items-center bg-white rounded-full pl-4 pr-2 py-2 shadow-md transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105"
-                        >
-                          <span className="text-gray-700 font-medium mr-2 text-sm">
-                            {city}
-                          </span>
-                          <button
-                            onClick={() => {
-                              setServiceData({
-                                ...serviceData,
-                                cities: serviceData.cities.filter(
-                                  (c) => c !== city
-                                ),
-                              });
-                            }}
-                            className="p-1 rounded-full bg-gray-100 text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors duration-300 ease-in-out"
-                            aria-label={`Remove ${city}`}
-                          >
-                            <XMarkIcon className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    {cities.length === 0 && (
-                      <p className="text-gray-500 mt-4">
-                        No cities selected. Add some cities to get started!
-                      </p>
-                    )}
-                  </div>
-                  <Textarea
-                    label="Description"
-                    color="indigo"
-                    onChange={(e) =>
-                      setServiceData({
-                        ...serviceData,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                  <div className="flex items-center gap-4 flex-col md:flex-row">
-                    <div className="flex flex-col gap-2 cursor-pointer">
-                      <label htmlFor="icon">Icon</label>
-                      <input
-                        className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
-                        type="file"
-                        onChange={(e) =>
-                          setImages({ ...images, icon: e.target.files[0] })
-                        }
-                        id="icon"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2 cursor-pointer">
-                      <label htmlFor="gallery-images">Gallery Images</label>
-                      <input
-                        className="relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-xs font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
-                        type="file"
-                        multiple
-                        id="gallery-images"
-                        onChange={(e) =>
-                          setImages({ ...images, images: e.target.files })
-                        }
-                      />
-                    </div>
-                  </div>
+                    <Button
+                      variant="gradient"
+                      color="teal"
+                      loading={imageUploaded}
+                      onClick={handleCreateService}
+                    >
+                      <span>Create</span>
+                    </Button>
+                  </DialogFooter>
                 </div>
               </div>
-
-              <DialogFooter>
-                <Button
-                  variant="text"
-                  color="red"
-                  onClick={handleOpen}
-                  className="mr-1"
-                >
-                  <span>Cancel</span>
-                </Button>
-                <Button
-                  variant="gradient"
-                  color="teal"
-                  loading={imageUploaded}
-                  onClick={handleCreateService}
-                >
-                  <span>Create</span>
-                </Button>
-              </DialogFooter>
             </Dialog>
           </div>
           <div className="px-10 md:px-20 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

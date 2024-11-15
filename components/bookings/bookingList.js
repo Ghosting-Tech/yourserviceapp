@@ -72,6 +72,9 @@ const BookingList = ({ bookings, forUser }) => {
                       <h2 className="text-lg font-semibold text-gray-800">
                         {item.name}
                       </h2>
+                      <p className="text-sm text-gray-600">
+                        Id: {service.bookingId}
+                      </p>
                       <div className="flex items-center justify-between gap-4 mt-1">
                         <p className="text-lg font-bold text-teal-600">
                           ₹{item.price}
